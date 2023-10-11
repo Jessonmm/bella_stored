@@ -1,0 +1,241 @@
+    {% load static %}
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+
+<!-- belle/register.html   11 Nov 2019 12:22:27 GMT -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<title>BELLE &ndash; Create an account</title>
+<meta name="description" content="description">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Favicon -->
+<link rel="shortcut icon" href={% static '/images/favicon.png' %}>
+<!-- Plugins CSS -->
+<link rel="stylesheet" href={% static '/css/plugins.css' %}>
+<!-- Bootstap CSS -->
+<link rel="stylesheet" href={% static '/css/bootstrap.min.css' %}>
+<!-- Main Style CSS -->
+<link rel="stylesheet" href={% static '/css/style.css' %}>
+<link rel="stylesheet" href={% static '/css/responsive.css' %}>
+</head>
+<body class="page-template belle">
+<div class="pageWrapper">
+	<!--Search Form Drawer-->
+
+
+
+
+    <!--End Search Form Drawer-->
+        <!--Top Header-->
+        <div class="top-header">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-10 col-sm-8 col-md-5 col-lg-4">
+                <div class="currency-picker">
+                    <ul id="currencies">
+                        <!-- Add your currency items here if needed -->
+                    </ul>
+                </div>
+                <div class="language-dropdown">
+                    <!-- Add your language dropdown items here if needed -->
+                </div>
+                <p class="phone-no">ph. 6238927277</p>
+            </div>
+            <div class="col-sm-4 col-md-4 col-lg-4 d-none d-lg-none d-md-block d-lg-block">
+                <div class="text-center">
+                    <p class="top-header_middle-text"> Created by:Jesson mm</p>
+                </div>
+            </div>
+            <div class="col-2 col-sm-4 col-md-3 col-lg-4 text-right">
+                <span class="user-menu d-block d-lg-none">
+                    <i class="anm anm-user-al" aria-hidden="true"></i>
+                </span>
+
+        </div>
+    </div>
+</div>
+    <!--    End Top Header-->
+    <!--Header-->
+    <div class="header-wrap animated d-flex">
+    	<div class="container-fluid">
+            <div class="row align-items-center">
+            	<!--Desktop Logo-->
+                <div class="logo col-md-2 col-lg-2 d-none d-lg-block">
+                    <a href="index.html">
+                    	<img src={% static '/images/logo.svg' %} alt="Belle store" title="Belle store" />
+                    </a>
+                </div>
+                <!--End Desktop Logo-->
+                <div class="col-2 col-sm-3 col-md-3 col-lg-8">
+                	<div class="d-block d-lg-none">
+                        <button type="button" class="btn--link site-header__menu js-mobile-nav-toggle mobile-nav--open">
+                        	<i class="icon anm anm-times-l"></i>
+                            <i class="anm anm-bars-r"></i>
+                        </button>
+                    </div>
+                	<!--Desktop Menu-->
+                </div>
+                <div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <!--End Header-->
+    <!--Mobile Menu-->
+
+
+
+    <!--Body Content-->
+    	<!--Page Title-->
+        <div id="page-content">
+            <!--Page Title-->
+            <div class="page section-header text-center">
+                <div class="page-title">
+                    <div class="form-group">
+                        {% for message in messages %}
+                        <div class="alert alert-danger" role="alert">
+                        {{message}}
+                        </div>
+                        {% endfor %}
+                        </div>
+                    <div class="wrapper"><h1 class="page-width">Add Address</h1></div>
+                  </div>
+            </div>
+        <!--End Page Title-->
+
+        <div class="container">
+        	<div class="row">
+                <div class="col-12 col-sm-12 col-md-6 col-lg-6 main-col offset-md-3">
+                	<div class="mb-4">
+
+                       <form  action="{% url 'add_address' %}" method="post"> {% csrf_token %}
+                          <div class="row">
+	                           <div class="col-6 col-sm-6 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label for="FirstName">Firstname</label>
+                                    <input type="text" name="Firstname" placeholder="Firstname" id="FirstName" autofocus="">
+                                </div>
+                               </div>
+
+                                    <div class="col-6 col-sm-6 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label for="Lastname">Lastname</label>
+                                    <input type="text" name="Lastname" placeholder="Lastname" id="Lastname" autofocus="">
+                                </div>
+                               </div>
+
+                               <div class="col-6 col-sm-6 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label for="Email">Email</label>
+                                    <input type="email" name="Email" placeholder="Email" id="Email" class="" autocorrect="off" autocapitalize="off" autofocus="">
+                                </div>
+                            </div>
+
+                               <div class="col-6 col-sm-6 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label for="Phone_number">Phone Number</label>
+                                    <input type="text" name="Phone_number" placeholder="Phone number" id="CustomerPhone_number" class="" autocorrect="off" autocapitalize="off" autofocus="">
+                                </div>
+                            </div>
+
+
+                            <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                                <div class="form-group">
+                                    <label for="CustomerAdddress1">Address 1</label>
+                                    <input type="text" value="" name="Address1" placeholder="Address 1" id="CustomerAddress1" class="">
+                                </div>
+                                <div class="form-group">
+                                    <label for="CustomerAddress2">Address 2</label>
+                                    <input type="text" value="" name="Address2" placeholder="Address 2" id="CustomerAddress2" class="">
+                                </div>
+                            </div>
+
+
+                              	<div class="col-6 col-sm-6 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label for="Country">Country</label>
+                                    <input type="text" name="Country" placeholder="Country" id="Country" autofocus="">
+                                </div>
+                               </div>
+
+                                    <div class="col-6 col-sm-6 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label for="State">State</label>
+                                    <input type="text" name="State" placeholder="State" id="State" autofocus="">
+                                </div>
+                               </div>
+
+                               <div class="col-6 col-sm-6 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label for="District">District</label>
+                                    <input type="text" name="District" placeholder="District" id="District" class="" autocorrect="off" autocapitalize="off" autofocus="">
+                                </div>
+                            </div>
+
+                               <div class="col-6 col-sm-6 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label for="City">City</label>
+                                    <input type="text" name="City" placeholder="City" id="City" class="" autocorrect="off" autocapitalize="off" autofocus="">
+                                </div>
+                            </div>
+
+                              <div class="col-6 col-sm-6 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label for="District">Pincode</label>
+                                    <input type="number" name="Pincode" placeholder="Pincode" id="Pincode" class="" autocorrect="off" autocapitalize="off" autofocus="">
+                                </div>
+                            </div>
+
+                               <div class="col-6 col-sm-6 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label for="Ordernote">Ordernote</label>
+                                    <input type="text" name="Ordernote" placeholder="Ordernote" id="Ordernote" class="" autocorrect="off" autocapitalize="off" autofocus="">
+                                </div>
+                            </div>
+
+                          </div>
+
+
+                          <div class="row">
+                            <div class="text-center col-12 col-sm-12 col-md-12 col-lg-12">
+                                <input type="submit" class="btn mb-3" value="Add Address">
+
+                            </div>
+
+                         </div>
+
+                     </form>
+                    </div>
+               	</div>
+            </div>
+        </div>
+
+    </div>
+    <!--End Body Content-->
+
+    <!--Footer-->
+
+    <!--End Footer-->
+    <!--Scoll Top-->
+    <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
+    <!--End Scoll Top-->
+
+     <!-- Including Jquery -->
+     <script src={% static '/js/vendor/jquery-3.3.1.min.js' %}></script>
+     <script src={% static '/js/vendor/jquery.cookie.js' %}></script>
+     <script src={% static '/js/vendor/modernizr-3.6.0.min.j' %}></script>
+     <script src={% static '/js/vendor/wow.min.js' %}></script>
+     <!-- Including Javascript -->
+     <script src={% static '/js/bootstrap.min.js' %}></script>
+     <script src={% static '/js/plugins.js' %}></script>
+     <script src={% static '/js/popper.min.js'%}></script>
+     <script src={% static '/js/lazysizes.js' %}></script>
+     <script src={% static '/js/main.js' %}></script>
+</div>
+</body>
+
+<!-- belle/register.html   11 Nov 2019 12:22:27 GMT -->
+</html>

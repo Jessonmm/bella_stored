@@ -1,0 +1,204 @@
+{% load static %}
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>BELLE &ndash; OTP Verification</title>
+  <meta name="description" content="description">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="{% static '/images/favicon.png' %}">
+  <!-- Plugins CSS -->
+  <link rel="stylesheet" href="{% static '/css/plugins.css' %}">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="{% static '/css/bootstrap.min.css' %}">
+  <!-- Main Style CSS -->
+  <link rel="stylesheet" href="{% static '/css/style.css' %}">
+  <link rel="stylesheet" href="{% static '/css/responsive.css' %}">
+    <!-- Include jQuery and Bootstrap (You can use other libraries as well) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</head>
+
+<body class="page-template belle">
+  <div class="pageWrapper">
+    <!-- Search Form Drawer -->
+
+    <!-- End Search Form Drawer -->
+
+          <!--Top Header-->
+        <div class="top-header">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-10 col-sm-8 col-md-5 col-lg-4">
+                <div class="currency-picker">
+                    <ul id="currencies">
+                        <!-- Add your currency items here if needed -->
+                    </ul>
+                </div>
+                <div class="language-dropdown">
+                    <!-- Add your language dropdown items here if needed -->
+                </div>
+                <p class="phone-no">ph. 6238927277</p>
+            </div>
+            <div class="col-sm-4 col-md-4 col-lg-4 d-none d-lg-none d-md-block d-lg-block">
+                <div class="text-center">
+                    <p class="top-header_middle-text"> Created by:Jesson mm</p>
+                </div>
+            </div>
+            <div class="col-2 col-sm-4 col-md-3 col-lg-4 text-right">
+                <span class="user-menu d-block d-lg-none">
+                    <i class="anm anm-user-al" aria-hidden="true"></i>
+                </span>
+
+            </div>
+        </div>
+    </div>
+</div>
+    <!-- End Top Header -->
+
+    <!-- Header -->
+    <div class="header-wrap animated d-flex">
+      <div class="container-fluid">
+        <div class="row align-items-center">
+          <!-- Desktop Logo -->
+          <div class="logo col-md-2 col-lg-2 d-none d-lg-block">
+            <a href="index.html">
+              <img src="{% static '/images/logo.svg' %}" alt="Belle store" title="Belle store">
+            </a>
+          </div>
+          <!-- End Desktop Logo -->
+          <div class="col-2 col-sm-3 col-md-3 col-lg-8">
+            <div class="d-block d-lg-none">
+              <button type="button" class="btn--link site-header__menu js-mobile-nav-toggle mobile-nav--open">
+                <i class="icon anm anm-times-l"></i>
+                <i class="anm anm-bars-r"></i>
+              </button>
+            </div>
+            <!-- Desktop Menu -->
+          </div>
+          <div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Header -->
+
+    <!-- Body Content -->
+    <div id="page-content">
+      <!-- Page Title -->
+      <div class="page section-header text-center">
+        <div class="page-title">
+          <div class="form-group">
+            {% for message in messages %}
+            <div class="alert alert-danger" role="alert">
+              {{ message }}
+            </div>
+            {% endfor %}
+          </div>
+          <div class="wrapper">
+            <h1 class="page-width">OTP Verification</h1>
+          </div>
+        </div>
+      </div>
+      <!-- End Page Title -->
+
+      <div class="container">
+        <div class="row">
+          <div class="col-12 col-sm-12 col-md-6 col-lg-6 main-col offset-md-3">
+            <div class="mb-4">
+              <form method="post" action="{% url 'otp' %}" id="OTPVerificationForm" accept-charset="UTF-8" class="contact-form">
+                {% csrf_token %}
+                <div class="row">
+                  <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+
+                    <div class="form-group">
+                      <label for="OTP" id="Hide">OTP</label>
+                      <input type="text"  name="otp" placeholder="Enter OTP" id="OTP" class="">
+
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div id="Otps" class="text-center col-12 col-sm-12 col-md-12 col-lg-12">
+                    <button  type="submit" class="btn mb-3 bg-dark text-white">Verify OTP<button>
+                  </div>
+                </div>
+
+              </form>
+                 <div class="row">
+                     <div  class="text-center col-12 col-sm-12 col-md-12 col-lg-12">
+
+                                 <div  id="otp-timer"  class="alert alert-info">OTP Timer: <span id="timer"></span><span id="sec"> seconds</span> </div>
+    <!-- Add a div for the "Resend OTP" link with an initial style of display:none -->
+    <div id="resend-link" style="display:none;">
+      <a class='h3' href="{% url 'resend_otp' %}">Resend OTP</a>
+    </div>
+
+                                </div>
+                            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Body Content -->
+
+    <footer>
+      <span id="site-scroll">
+        <i class="icon anm anm-angle-up-r"></i>
+      </span>
+      <!-- End Scroll To Top -->
+    </footer>
+
+    <!-- Including JavaScript -->
+    <script src="{% static '/js/vendor/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static '/js/vendor/jquery.cookie.js' %}"></script>
+    <script src="{% static '/js/vendor/modernizr-3.6.0.min.js' %}"></script>
+    <script src="{% static '/js/vendor/wow.min.js' %}"></script>
+    <script src="{% static '/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 's/js/plugins.js' %}"></script>
+    <script src="{% static '/js/popper.min.js' %}"></script>
+    <script src="{% static '/js/lazysizes.js' %}"></script>
+    <script src="{% static '/js/main.js' %}"></script>
+  </div>
+</body>
+<script>
+  // Function to start the OTP timer
+  function startTimer(duration, display) {
+    var timer = duration, minutes, seconds;
+    var countdown = setInterval(function () {
+      minutes = parseInt(timer / 60, 10);
+      seconds = parseInt(timer % 60, 10);
+
+      minutes = minutes < 10 ? "0" + minutes : minutes;
+      seconds = seconds < 10 ? "0" + seconds : seconds;
+
+      display.textContent = minutes + ":" + seconds;
+
+      if (--timer < 0) {
+        clearInterval(countdown); // Stop the timer when it reaches 0
+        // Show the "Resend OTP" link
+        document.getElementById("resend-link").style.display = "block";
+        document.getElementById('OTP').style.display ='none';
+        document.getElementById('Hide').style.display ='none';
+        document.getElementById('Otps').style.display ='none';
+        document.getElementById('sec').style.display ='none';
+        display.textContent = "TIME OUT";
+
+      }
+    }, 1000);
+  }
+
+  // Adjust the timer duration (in seconds) as needed
+  var timerDuration = 60    ; // 5 minutes
+  var display = document.querySelector("#timer");
+  startTimer(timerDuration, display);
+</script>
+<!-- belle/login.html   11 Nov 2019 12:22:27 GMT -->
+</html>

@@ -1,0 +1,208 @@
+{% extends 'admin side/base.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <Y></Y>
+    <title>Orders</title>
+    <link rel="stylesheet" href="{% static 'css/admin/crud.css' %}">
+    <script src="{% static 'js/admin/crud.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+       <div class="form-group">
+                        {% for message in messages %}
+                        <div class="alert alert-danger" role="alert">
+                        {{message}}
+                        </div>
+                        {% endfor %}
+                        </div>
+    <div class="table-wrapper">
+        <div class="table-title">
+            <div class="row">
+                <div class="col-12 col-md-6">
+                    <h2>Manage <b>Orders</b></h2>
+                </div>
+
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+
+                        <th>No.</th>
+                        <th>Name</th>
+                        <th>Date</th>
+                         <th>Payment Mode</th>
+                        <th>Tracking id</th>
+                        <th>Total</th>
+                         <th>Status</th>
+                        <th>Action </th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                        {% for o in order %}
+                    <tr>
+
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ o.full_name}}</td>
+                        <td>{{ o.created_at }}</td>
+                          <td>{{o.payment.payment_method}}</td>
+                        <td>{{o.order_number}}</td>
+
+                        <td>₹{{o.order_total}}</td>
+                         <td>{{o.status}}</td>
+                        <td>
+                        {% if o.status == 'Delivered' %}
+                        <label class="badge badge-success">Delivered</label>
+                        {% elif o.status == 'Cancelled' %}
+                        <label class="badge badge-danger">Cancelled</label>
+                        {% elif o.status == 'Returned' %}
+                        <label class="badge badge-warning">Returned</label>
+                         {% else %}
+                                  <button  class="badge badge-info" type="button"  data-toggle="modal" data-target="#myModal{{o.id}}" id="Modal_button">Change</button>
+                        {% endif %}
+                         </td>
+                         <td>
+                             {% if o.status == 'Order Confirmed' %}
+
+                             <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#cancel{{o.id}}">Cancel</button>
+                              {% elif o.status == 'Returned' %}
+
+                                <b>Reason : </b><p>{{o.return_reason}}</p>
+
+                             {% endif %}
+                         </td>
+                         <div class="modal fade" id="myModal{{o.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5>Change Status</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="{% url 'update_order' o.id %}" method="POST">
+          {% csrf_token %}
+
+          {% if o.status == 'Order Confirmed' %}
+
+          <div class="row mb-2">
+            <input class="ml-3" type="radio" name="status" value="Order Confirmed" disabled checked>
+            <label for="dreamweaver" class="ml-2 mt-2">Order Confirmed</label>
+          </div>
+          <div class="row mb-2">
+            <input class="ml-3" type="radio" name="status" value="Shipped">
+            <label for="dreamweaver" class="ml-2 mt-2 text-info">Shipped</label>
+          </div>
+          <div class="row mb-2">
+            <input class="ml-3" type="radio" name="status" value="Out for delivery" disabled>
+            <label for="dreamweaver" class="ml-2 mt-2 text-warning">Out for delivery</label>
+          </div>
+          <div class="row mb-2">
+            <input class="ml-3" type="radio" name="status" value="Delivered" disabled>
+            <label for="dreamweaver" class="ml-2 mt-2 text-success">Delivered</label>
+          </div>
+
+          {% elif o.status == 'Shipped' %}
+
+          <div class="row mb-2">
+            <input class="ml-3" type="radio" name="status" value="Order Confirmed" disabled>
+            <label for="dreamweaver" class="ml-2 mt-2">Order Confirmed</label>
+          </div>
+          <div class="row mb-2">
+            <input class="ml-3" type="radio" name="status" value="Shipped" disabled checked>
+            <label for="dreamweaver" class="ml-2 mt-2 text-info">Shipped</label>
+          </div>
+          <div class="row mb-2">
+            <input class="ml-3" type="radio" name="status" value="Out for delivery">
+            <label for="dreamweaver" class="ml-2 mt-2 text-warning">Out for delivery</label>
+          </div>
+          <div class="row mb-2">
+            <input class="ml-3" type="radio" name="status" value="Delivered" disabled>
+            <label for="dreamweaver" class="ml-2 mt-2 text-success">Delivered</label>
+          </div>
+
+          {% else %}
+
+          <div class="row mb-2">
+            <input class="ml-3" type="radio" name="status" value="Order Confirmed" disabled>
+            <label for="dreamweaver" class="ml-2 mt-2">Order Confirmed</label>
+          </div>
+          <div class="row mb-2">
+            <input class="ml-3" type="radio" name="status" value="Shipped" disabled>
+            <label for="dreamweaver" class="ml-2 mt-2 text-info">Shipped</label>
+          </div>
+          <div class="row mb-2">
+            <input class="ml-3" type="radio" name="status" value="Out for delivery"  disabled checked>
+            <label for="dreamweaver" class="ml-2 mt-2 text-warning">Out for delivery</label>
+          </div>
+          <div class="row mb-2">
+            <input class="ml-3" type="radio" name="status" value="Delivered">
+            <label for="dreamweaver" class="ml-2 mt-2 text-success">Delivered</label>
+          </div>
+
+          {% endif %}
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+          </div>
+        </form>
+    </div>
+  </div>
+</div>
+
+          <!--Cancel Modal -->
+          <div class="modal fade" id="cancel{{o.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Cancel Order</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body text-left">
+                  Are you sure to cancel the order <b>#{{o.order_number}}</b>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                  <a type="button" href="{% url 'cancel_order' o.order_number %}" class="btn btn-primary">Yes</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="clearfix">
+            <div class="hint-text">Showing <b>5</b> out of <b>25</b> entries</div>
+            <ul class="pagination">
+                <li class="page-item disabled"><a href="#" class="page-link">Previous</a></li>
+                <li class="page-item"><a href="#" class="page-link">1</a></li>
+                <li class="page-item"><a href="#" class="page-link">2</a></li>
+                <li class="page-item active"><a href="#" class="page-link">3</a></li>
+                <li class="page-item"><a href="#" class="page-link">4</a></li>
+                <li class="page-item"><a href="#" class="page-link">5</a></li>
+                <li class="page-item"><a href="#" class="page-link">Next</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- Add Modal HTML -->
+
+
+{% endblock %}

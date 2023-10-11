@@ -1,0 +1,591 @@
+    {% load static %}
+    <!DOCTYPE html>
+    <html class="no-js" lang="en">
+    <style>
+    body{
+    margin: 0%;
+    /* overflow-y: hidden; */
+    overflow-x: hidden;
+}
+ .site-footer {
+        width: 100%;
+        background-color: #f7f7f7;
+        padding: 20px 0;
+        box-sizing: border-box;
+    }
+
+    .site-footer .container {
+        max-width: 1200px; /* Adjust as needed */
+        margin: 0 auto;
+    }
+
+    /* Add more styling as needed */
+
+    @media (max-width: 767px) {
+        /* Add responsive styles for smaller screens */
+        .site-footer .container {
+            padding: 0 15px; /* Adjust as needed */`<X></X>
+        }
+    }
+.icon.anm.anm-bag-l {
+    font-size: 22px; /* Adjust the size value to your desired size */
+  }
+.site-header__actions {
+    display: flex;
+    align-items: center;
+}
+
+.site-cart {
+    margin-right: 10px; /* Add some spacing between the cart icon and search bar */
+}
+
+.site-header__search {
+    display: flex;
+    align-items: center;
+}
+
+.site-header__search form {
+    display: flex;
+    align-items: center;
+}
+
+/* Increase the width of the search bar */
+.site-header__search input[type="text"] {
+    width: 130px; /* Adjust the width as needed */
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px; /* Add some spacing between the search bar and search button */
+}
+
+.search-button {
+    background-color: #333;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    padding-left: 5px;
+    height:40px;
+    font-size: 16px;
+}
+
+.search-button:hover {
+    background-color: #555;
+}
+
+
+</style>
+    <!-- belle/login.html   11 Nov 2019 12:22:27 GMT -->
+    <head>
+        <!-- Add these inside the <head> tag -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+
+<!-- Add these just before the closing </body> tag -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Checkout</title>
+    <meta name="description" content="description">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Favicon -->
+    <link rel="shortcut icon" href= {% static '/images/favicon.png' %} >
+    <!-- Plugins CSS -->
+    <link rel="stylesheet" href= {% static '/css/plugins.css' %}>
+    <!-- Bootstap CSS -->
+    <link rel="stylesheet" href= {% static '/css/bootstrap.min.css' %}>
+    <!-- Main Style CSS -->
+    <link rel="stylesheet" href= {% static '/css/style.css' %}>
+    <link rel="stylesheet" href=  {% static '/css/responsive.css' %}>
+    </head>
+<body class="template-product belle">
+	<div class="pageWrapper">
+        <!--Search Form Drawer-->
+        <div class="search">
+            <div class="search__form">
+                <form class="search-bar__form" action="#">
+                    <button class="go-btn search__button" type="submit"><i class="icon anm anm-search-l"></i></button>
+                    <input class="search__input" type="search" name="q" value="" placeholder="Search entire store..." aria-label="Search" autocomplete="off">
+                </form>
+                <button type="button" class="search-trigger close-btn"><i class="icon anm anm-times-l"></i></button>
+            </div>
+        </div>
+        <!--End Search Form Drawer-->
+        <!--Top Header-->
+        <div class="top-header">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-10 col-sm-8 col-md-5 col-lg-4">
+                <div class="currency-picker">
+                    <ul id="currencies">
+                        <!-- Add your currency items here if needed -->
+                    </ul>
+                </div>
+                <div class="language-dropdown">
+                    <!-- Add your language dropdown items here if needed -->
+                </div>
+                <p class="phone-no">ph. 6238927277</p>
+            </div>
+            <div class="col-sm-4 col-md-4 col-lg-4 d-none d-lg-none d-md-block d-lg-block">
+                <div class="text-center">
+                    <p class="top-header_middle-text"> Created by:Jesson mm</p>
+                </div>
+            </div>
+            <div class="col-2 col-sm-4 col-md-3 col-lg-4 text-right">
+                <span class="user-menu d-block d-lg-none">
+                    <i class="anm anm-user-al" aria-hidden="true"></i>
+                </span>
+                <ul class="customer-links list-inline">
+                    {% if  request.user.is_authenticated %}
+                    <li><a href="{% url 'logout' %}">logout</a></li>
+                    {% else %}
+                    <li><a href="{% url 'register' %}">register</a></li>
+                    <li><a href="{% url 'login' %}">login</a></li>
+                    {% endif %}
+
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+        <!--End Top Header-->
+        <!--Header-->
+        <div class="header-wrap animated d-flex">
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <!--Desktop Logo-->
+                    <div class="logo col-md-2 col-lg-2 d-none d-lg-block">
+                        <a href="{% url 'home' %}">
+                            <img src="{% static '/images/logo.svg' %}" alt="Belle Multipurpose Html Template" title="Belle Multipurpose Html Template" />
+                        </a>
+                    </div>
+                    <!--End Desktop Logo-->
+                    <div class="col-2 col-sm-3 col-md-3 col-lg-8">
+                        <div class="d-block d-lg-none">
+                            <button type="button" class="btn--link site-header__menu js-mobile-nav-toggle mobile-nav--open">
+                                <i class="icon anm anm-times-l"></i>
+                                <i class="anm anm-bars-r"></i>
+                            </button>
+                        </div>
+                        <!--Desktop Menu-->
+                        <nav class="grid__item" id="AccessibleNav"><!-- for mobile -->
+                            <ul id="siteNav" class="site-nav medium center hidearrow">
+                                <li class="lvl1 parent megamenu"><a href="{% url 'home' %}">Home <i class="anm anm-angle-down-l"></i></a>
+
+                                <li class="lvl1 parent megamenu"><a href="{% url 'store' %}">Shop <i class="anm anm-angle-down-l"></i></a>
+
+
+
+
+                                  {% if  request.user.is_authenticated %}
+                             <li class="lvl1 parent dropdown"><a href="#">Profile <i class="anm anm-angle-down-l"></i></a>
+                          <ul class="dropdown">
+                         <li><a href="{% url 'profiles' %}" class="site-nav">My Account</a></li>
+                          <li><a href="{% url 'change-password' %}" class="site-nav">Change password</a></li>
+                            <li><a href="{% url 'my_address' %}" class="site-nav">My Address</a></li>
+                            <li><a href="{% url 'my-orders' %}" class="site-nav">Orders</a></li>
+                            <li><a href="{% url 'cart' %}" class="site-nav">Cart Page</a> </li>
+                            <li><a href="{% url 'wallet' %}" class="site-nav">Wallet</a> </li>
+
+
+                          </ul>
+                                </li>
+                          {% endif %}
+
+
+                        </nav>
+                        <!--End Desktop Menu-->
+                    </div>
+                    <div class="col-6 col-sm-6 col-md-6 col-lg-2 d-block d-lg-none mobile-logo">
+                        <div class="logo">
+                            <a href="index.html">
+                                <img src="{% static '/images/logo.svg' %}" alt="Belle Multipurpose Html Template" title="Belle Multipurpose Htmlss Template" />
+                            </a>
+                        </div>
+                    </div>
+             <div class="col-4 col-sm-3 col-md-3 col-lg-2">
+<div class="col-4 col-sm-3 col-md-3 col-lg-2 site-header__actions">
+    <!-- Cart Icon -->
+    <div class="site-cart">
+        <a href="{% url 'cart' %}" class="site-nav" title="Cart">
+            <i class="icon anm anm-bag-l"></i>
+        </a>
+        <!-- End Minicart Popup -->
+    </div>
+
+    <!-- Search Form -->
+
+</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--End Header-->
+        <div class="mobile-nav-wrapper" role="navigation">
+		<div class="closemobileMenu"><i class="icon anm anm-times-l pull-right"></i> Close Menu</div>
+        <ul id="MobileNav" class="mobile-nav">
+        	<li class="lvl1 parent megamenu"><a href="{% url 'home' %}">Home </i></a>
+
+        </li>
+        	<li class="lvl1 parent megamenu"><a href="{% url 'store' %}">Shop </i></a>
+
+            </li>
+
+
+                                  {% if  request.user.is_authenticated %}
+                             <li class="lvl1 parent dropdown"><a href="#">Profile <i class="anm anm-angle-down-l"></i></a>
+                          <ul class="dropdown">
+                          <li><a href="{% url 'profiles' %}" class="site-nav">My Account</a></li>
+                          <li><a href="{% url 'change-password' %}" class="site-nav">Change password</a></li>
+                            <li><a href="{% url 'my_address' %}" class="site-nav">My Address</a></li>
+                            <li><a href="{% url 'my-orders' %}" class="site-nav">Orders</a></li>
+                            <li><a href="{% url 'cart' %}" class="site-nav">Cart Page</a> </li>
+                            <li><a href="{% url 'wallet' %}" class="site-nav">Wallet</a> </li>
+
+
+                          </ul>
+                                </li>
+                          {% endif %}
+
+
+      </ul>
+	</div>
+
+    <!--Body Content-->
+    <div id="page-content">
+    	<!--Page Title-->
+    	<div class="page section-header text-center">
+			<div class="page-title">
+        		<div class="wrapper"><h1 class="page-width">Checkout</h1></div>
+      		</div>
+		</div>
+        <!--End Page Title-->
+
+        <section class="checkout spad mt-5">
+    <div class="container">
+        	<div class="row">
+
+
+
+
+
+
+<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-3">
+
+
+        <div class="customer-box customer-coupon">
+
+
+         <form action="#">
+                              </form>
+            <h3 class="font-15 xs-font-13">
+                <i class="icon anm anm-gift-l"></i> Have a coupon?
+                <a href="#have-coupon" class="text-white text-decoration-underline" data-toggle="collapse">Click here to enter your code</a>
+            </h3>
+            <div id="have-coupon" class="collapse coupon-checkout-content">
+                <div class="discount-coupon">
+                    <div id="coupon" class="coupon-dec tab-pane active">
+                        <form id="coupon_form">
+                            <p class="margin-10px-bottom">Enter your coupon code if you have one.</p>
+                            <label class="required get" for="coupon-code">
+                                <span class="required-f">*</span> Coupon
+                            </label>
+                            <input id="coupon_data" placeholder="Enter Coupon Code" required="" type="text" class="mb-3">
+                            <input class="coupon-btn btn" type="submit" value="Apply Coupon">
+                        </form>
+                        <p class="text-danger mt-3" id="output"></p>
+                        {% if coupons %}
+                        <div class="accordion mt-3 shoping__discount" id="accordionExample">
+                            <h5>Available Coupons:</h5>
+
+                            {% for item in coupons %}
+                            <div class="card w-75">
+                                <div class="card-header" id="headingThree">
+                                    <h2 class="mb-0">
+                                        <button class="btn btn-link btn-block text-left collapsed text-danger text-decoration-none" type="button" data-toggle="collapse" data-target="#collapse{{forloop.counter}}" aria-expanded="false" aria-controls="collapseThree">
+                                            <span class="text-dark">{{forloop.counter}}.</span> <b>-{{item.coupon.discount}}% Off</b>
+                                        </button>
+                                    </h2>
+                                </div>
+                                <div id="collapse{{forloop.counter}}" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+                                    <div class="card-body">
+                                        <p><b>*</b>Applicable only for order price more than <b>₹{{item.coupon.min_value}}\-</b></p>
+                                        <span class="ml-3">Coupon Code: <b class="text-danger">{{item.coupon.code}}</b></span>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+ 	<div class="col-12 col-sm-12 col-md-12 col-lg-12  footer-links">
+
+
+
+  <form action="{% url 'place_order' %}" method="post">
+        {% csrf_token %}
+
+
+   {% if address %}
+    <!-- Display delivery addresses -->
+
+    <h5 class="card-header">DELIVERY ADDRESS</h5>
+   {% for item in address %}
+    <div class="card-body form-check row">
+        <div class="col-12">
+            {% if forloop.counter == 1 %}
+                <input class="form-check-input d-block ml-1 mt-2" value="{{item.id}}" type="radio" name="flexRadioDefault" checked>
+            {% else %}
+                <input class="form-check-input d-block ml-1 mt-2" value="{{item.id}}" type="radio" name="flexRadioDefault">
+            {% endif %}
+            <!-- Label for the radio button -->
+            <label class="form-check-label" for="address_{{item.id}}">
+                <!-- Address details -->
+                <div class="d-block ml-4">
+                    <p class="card-text mb-0"><b>{{item.first_name}} {{item.last_name}} </b>,{{item.address_line1}}, {{item.address_line2}}, {{item.city}}, {{item.district}}, {{item.state}}, {{item.pincode}}</p>
+                    <p class="cart-text mb-0">{{item.email}}</p>
+                    <p class="cart-text mb-0">{{item.phone}}</p>
+                </div>
+            </label>
+        </div>
+    </div>
+    <hr>
+{% endfor %}
+
+    <!-- Add New Address option -->
+    <div class="card-body form-check row">
+        <div class="col-12 py-2">
+            <div class="row d-flex align-content-center">
+                <div class="col-12 d-block ml-2 d-flex">
+
+
+                    <a href="{% url 'my_address' %}" class="col-3 btn ml-auto mr-5 text-white" style="background-color: black;">Add New Address</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <!-- Display messdage when no addresses found -->
+    <div class="card-body form-check row d-flex align-items-center" style="height: 328px;">
+        <div class="col-12 py-5">
+            <div class="row d-flex align-content-center">
+                <div class="col-12 d-block ml-2">
+                    <p class="card-text mb-0 h2 text-center"><b>No addresses found in your account!</b></p>
+                </div>
+                <a href="{% url 'my_address' %}" class="col-3 btn text-white mx-auto mt-3" style="background-color: #7fad39;">Add Address</a>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+                                                         <div class="col-lg-12 mt-5 mb-5">
+
+                                                     <h2 class="order-title mb-4">Your Order</h2>
+
+                                              <div class="invoice-items" style="margin-top: 26px;">
+                                                  <div class="table-responsive" style="overflow: hidden; outline: none;" tabindex="0">
+                                                      <table class="table" style="border:1px solid black">
+                                                          <thead class="thead-dark">
+                                                              <tr>
+                                                                  <th class="per70 text-center" style="border:1px solid white">Product name</th>
+                                                                  <th class="per5 text-center" style="border:1px solid white">Qty</th>
+                                                                  <th class="per5 text-center" style="border:1px solid white">Price</th>
+                                                                  <th class="per25 text-center" style="border:1px solid white">Total</th>
+                                                              </tr>
+                                                          </thead>
+                                                          <tbody >
+                                                              {% for item in cart_items %}
+                                                              <tr >
+                                                                  <td class="text-center" >{{item.product.product_name}}
+
+                                                                  </td>
+                                                                  <td class="text-center" id="qnty{{forloop.counter}}">{{item.quantity}}</td>
+                                                                  <td class="text-center" id="price{{forloop.counter}}" >₹{{item.price}} </td>
+                                                                  <td class="text-center" id="total{{forloop.counter}}" >₹{{item.sub_total}}</td>
+                                                              </tr>
+                                                              {% endfor %}
+                                                          </tbody>
+                                                          </table>
+
+
+                          <div class="col-12 col-sm-12 col-md-12 col-lg-12 mt-5 mb-5">
+
+
+                                  <div  class="text-right">Total:₹{{total}} </div><div  class="text-right" style="margin-top: 10px;">Tax :₹{{tax}} </div>
+
+                            <div class="checkout__order__total text-right" id="coupon_block" style="display: none;">Discount <span>= ₹<b id="coupon_discount"></b></span>
+
+                                  <h1 class="text-danger text-right" style="font-size: 16px;">*Coupon Applied - <b id="coupon_code"></b></h1>
+                                  </div>
+
+
+                                  <div  class="text-right" style="margin-top: 10px;">Shipping:{% if shipping == 0 %} free shipping {% else %} ₹{{shipping}}{% endif %}</div>
+                                  <div  class="text-right" style="margin-top: 10px;"><span id='grand_total'>₹{{grand_total}}</span></div>
+
+                                <div class="order-button-payment text-right">
+                                  <input type="text" name="coupon" id="coupon_code1" style="display: none;">
+                                   <input class="btn "   value="Proceed to payment" type="submit">
+
+                                                  </div>
+                                              </div>
+                                              </div>
+                                             </div>
+                                          <hr />
+                                       </div>
+                                      </div>
+                                   </div>
+                                </div>
+
+
+
+
+       </form>
+
+    <!--End Body Content-->
+
+    <!--Footer-->
+   <footer id="footer">
+        <div class="newsletter-section">
+
+
+            </div>
+        </div>
+        <div class="site-footer">
+        	<div class="container">
+     			<!--Footer Links-->
+            	<div class="footer-top">
+                	<div class="row">
+                    	<div class="col-12 col-sm-12 col-md-3 col-lg-3 footer-links">
+                        	<h4 class="h4">Quick Shop</h4>
+                            <ul>
+                            	<li><a href="#">Women</a></li>
+                                <li><a href="#">Men</a></li>
+                                <li><a href="#">Kids</a></li>
+                                <li><a href="#">Sportswear</a></li>
+                                <li><a href="#">Sale</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-12 col-sm-12 col-md-3 col-lg-3 footer-links">
+                        	<h4 class="h4">Informations</h4>
+                            <ul>
+                            	<li><a href="#">About us</a></li>
+                                <li><a href="#">Careers</a></li>
+                                <li><a href="#">Privacy policy</a></li>
+                                <li><a href="#">Terms &amp; condition</a></li>
+                                <li><a href="#">My Account</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-12 col-sm-12 col-md-3 col-lg-3 footer-links">
+                        	<h4 class="h4">Customer Services</h4>
+                            <ul>
+                            	<li><a href="#">Request Personal Data</a></li>
+                                <li><a href="#">FAQ's</a></li>
+                                <li><a href="#">Contact Us</a></li>
+                                <li><a href="#">Orders and Returns</a></li>
+                                <li><a href="#">Support Center</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-12 col-sm-12 col-md-3 col-lg-3 footer-links">
+                        	<h4 class="h4">Contact Us</h4>
+                               <ul>
+                            	<li><a href="#">Jesson mm</a></li>
+                                <li><a href="#">6238927277</a></li>
+                                <li><a href="#">www.jessommm0@gmail.com</a></li>
+
+                            </ul>
+
+                        </div>
+                    </div>
+                </div>
+                <!--End Footer Links-->
+                <hr>
+                <div class="footer-bottom">
+                	<div class="row">
+                    	<!--Footer Copyright-->
+	                	<div class="row">
+	                	<span class="col-12 col-sm-12 col-md-12 col-lg-12 copyright text-center"><span></span> <a href="templateshub.net"><a class="social-icons__link" href="https://www.instagram.com/___jesson_mm___/" target="_blank" title="Belle Multipurpose Bootstrap 4 Template on Instagram"><i class="icon icon-instagram"></i> <span class="icon__fallback-text">Instagram</span></a></a></span>
+                        <!--End Footer Copyright-->
+                    </div>
+                        <!--End Footer Payment Icon-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+
+     <!-- Including Jquery -->
+<script src="{% static 'js/vendor/jquery-3.3.1.min.js' %}"></script>
+<script src="{% static 'js/vendor/jquery.cookie.js' %}"></script>
+<script src="{% static 'js/vendor/modernizr-3.6.0.min.js' %}"></script>
+<script src="{% static 'js/vendor/wow.min.js' %}"></script>
+<!-- Including Javascript -->
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/plugins.js' %}"></script>
+<script src="{% static 'js/popper.min.js' %}"></script>
+<script src="{% static 'js/lazysizes.js' %}"></script>
+<script src="{% static 'js/main.js' %}"></script>
+
+</div>
+
+
+
+</body>
+
+<!-- belle/checkout.html   11 Nov 2019 12:44:33 GMT -->
+</html>
+
+<script>
+    $('#coupon_form').on('submit', function(e){
+
+        e.preventDefault();
+
+          $.ajax({
+               type : "POST",
+               url: "{% url 'coupon' %}",
+               data: {
+                   coupon : $('#coupon_data').val(),
+                   grand_total : '{{grand_total}}',
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                dataType: "json",
+
+               },
+
+               success: function(data){
+                  $('#output').html(data.msg) /* response message */
+                  $('#grand_total').text('₹'+data.grand_total)
+                  if (data.coupon_discount > 0) {
+                      $('#coupon_block').show()
+                      $('#accordionExample').hide()
+                  }
+                  $('#coupon_discount').html(data.coupon_discount)
+                  $('#coupon_code').html(data.coupon_code)
+                  $('#coupon_code1').val(data.coupon_code)
+
+
+               },
+
+               failure: function() {
+
+               }
+
+
+           });
+
+
+                });
+</script>
