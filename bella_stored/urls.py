@@ -13,6 +13,6 @@ urlpatterns = [
     path('', include('orders.urls')),
     path('', include('profiles.urls')),
 
- ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
+ ]+ static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
 
 handler404='shop.views.error_404'
