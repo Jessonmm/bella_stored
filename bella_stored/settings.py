@@ -90,7 +90,7 @@ WSGI_APPLICATION = 'bella_stored.wsgi.application'
 DATABASES = {
     'default':{
         'ENGINE':'django.db.backends.postgresql',
-        'USER':config('Username'),
+        'USER':config('User_name'),
         'NAME':config('Database'),
         'PASSWORD':config('password'),
         'HOST':config('Hostname'),
@@ -134,7 +134,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static")
+# STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static")
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), ]
 
 
