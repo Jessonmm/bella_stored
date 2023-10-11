@@ -86,7 +86,7 @@ def place_order(request, total=0, quantity=0):
         coupon_code = request.POST['coupon']
         id = request.POST['flexRadioDefault']
         address = Address.objects.get(user=request.user, id=id)
-        cart_item=CartItem.objects.get(user=request.user)
+
         data = Order()
         data.user = current_user
         data.first_name = address.first_name
