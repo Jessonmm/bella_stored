@@ -90,10 +90,10 @@ WSGI_APPLICATION = 'bella_stored.wsgi.application'
 DATABASES = {
     'default':{
         'ENGINE':'django.db.backends.postgresql',
-        'USER':config('user'),
-        'NAME':config('name'),
+        'USER':config('Username'),
+        'NAME':config('Database'),
         'PASSWORD':config('password'),
-        'HOST':config('host'),
+        'HOST':config('Hostname'),
         'PORT':'5432'
     }
 }
