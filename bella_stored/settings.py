@@ -9,8 +9,9 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
-from pathlib import Path,os
+import os
+from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-0lt4vu!i)wmxxu^1ag2&5d_jw*@8^kyqm(u1rexp%yih+yz4-$'
+SECRET_KEY = config('secr_key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -89,10 +90,10 @@ WSGI_APPLICATION = 'bella_stored.wsgi.application'
 DATABASES = {
     'default':{
         'ENGINE':'django.db.backends.postgresql',
-        'USER':'postgres',
-        'NAME':'bella',
-        'PASSWORD':'12345',
-        'HOST':'localhost',
+        'USER':config('user'),
+        'NAME':config('name'),
+        'PASSWORD':config('password'),
+        'HOST':config('host'),
         'PORT':'5432'
     }
 }
@@ -152,8 +153,8 @@ OTP_SECRET = os.getenv('OTP_SECRET')
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'jessonmm48@gmail.com'
-EMAIL_HOST_PASSWORD = 'zqkacfctkhbcpujp'
+EMAIL_HOST_USER = config('email_host_user')
+EMAIL_HOST_PASSWORD = config('email_host_password')
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
@@ -170,6 +171,7 @@ AUTHENTICATION_BACKENDS = [
 #razorpay data
 
 
-RAZORPAY_ID = 'rzp_test_M9I4y7eqGrotVX'
-KEY_SECRET= 'P1TqmWUzRSXcba1SeOtKqTEG'
-RAZORPAY_KEY = 'P1TqmWUzRSXcba1SeOtKqTEG'
+RAZORPAY_ID = config('razorpayid')
+KEY_SECRET= config('razor_secret')
+RAZORPAY_KEY = config('razor_key')
+
