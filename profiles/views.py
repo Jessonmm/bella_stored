@@ -59,10 +59,20 @@ def edit_profile(request):
             if not new_username:
                 messages.error(request,'username is required')
                 return redirect('profiles')
+
+            if not re.match(r'^[A-Za-z0-9@#$%^&+=]*$', new_username):
+                messages.error(request, 'username is not valid.')
+                return redirect('profiles')
+
+
+            if len(set(new_username))==1:
+                messages.error(request,'username is not valid')
+                return redirect('profiles')
+
             if not new_email:
                 messages.error(request,'email is required')
 
-            pattern2=r'^[a-zA-Z0-9_%-+]+@gmail\.com$'
+            pattern2=r'^[.a-zA-Z0-9_%-+]+@gmail\.com$'
             if not re.match(pattern2,new_email):
 
                 messages.error(request,'email is not valid')
@@ -74,7 +84,7 @@ def edit_profile(request):
             pattern = r'^\d{10}$'
 
             if not re.match(pattern,new_phone_number):
-                messages.error(request,'phone number must  be 10 digits')
+                messages.error(request,'phone number is not valid')
                 return redirect('profiles')
 
             if len(set(new_phone_number))==1:
@@ -126,11 +136,19 @@ def change_password(request):
         if request.user.check_password(old_password):
             if new_password == confirm_new_password:
                 if new_password != old_password:
-                    request.user.set_password(new_password)
-                    request.user.save()
-                    update_session_auth_hash(request, request.user)
-                    messages.success(request, 'Password changed successfully')
+                    if len(set(new_password)) == 1:
+                        if not re.match(r'^[A-Za-z0-9@#$%^&+=]*$', new_password):
+                            request.user.set_password(new_password)
+                            request.user.save()
+                            update_session_auth_hash(request, request.user)
+                            messages.success(request, 'Password changed successfully')
+                            return redirect('change-password')
+
+                        messages.error(request, 'password is not valid')
+                        return redirect('change-password')
+                    messages.error(request, 'password is not valid')
                     return redirect('change-password')
+
                 else:
                     messages.error(request, 'New password and old password are the same')
                     return redirect('change-password')
@@ -187,19 +205,46 @@ def addaddress(request):
             if not first_name:
                 messages.error(request,'first name is required')
                 return  redirect('add_address')
+
+            if not re.match(r'^[A-Za-z0-9@#$%^&+=]*$', first_name):
+                messages.error(request, 'firstname is not valid.')
+                return redirect('add_address')
+
+
+            if len(set(first_name))==1:
+                messages.error(request,'firstname is not valid')
+                return redirect('add_address')
+
+
+
+
             if not last_name:
                 messages.error(request,'last name is required')
                 return  redirect('add_address')
+
+            if not re.match(r'^[A-Za-z0-9@#$%^&+=]*$', last_name):
+                messages.error(request, 'last name is not valid.')
+                return redirect('add_address')
+
+
+
+
+
             if not email:
                 messages.error(request,'email is required')
                 return  redirect('add_address')
-            pattern1 = r'^[a-zA-Z0-9_%-+]+@gmail\.com$'
+
+            pattern1 = r'^[.a-zA-Z0-9_%-+]+@gmail\.com$'
             if not re.match(pattern1, email):
                 messages.error(request, 'Email is not valid')
                 return redirect('add_address')
+
+
+
             if not phone_number:
                 messages.error(request,'phone number is required')
                 return  redirect('add_address')
+
 
             if len(set(phone_number))==1:
                 messages.error(request,'Phone number is not valid')
@@ -209,24 +254,87 @@ def addaddress(request):
             if not re.match(pattern, phone_number):
                 messages.error(request, 'Phone number must had 10 numbers')
                 return redirect('add_address')
+
+
+
             if not address_line1:
                 messages.error(request,'address1 is required')
                 return  redirect('add_address')
+
+
+
+
+            if len(set(address_line1))==1:
+                messages.error(request,'address1 is not valid')
+                return redirect('add_address')
+
+
             if not address_line2:
                 messages.error(request,'address2 is required')
                 return  redirect('add_address')
+
+
+
+            if len(set(address_line2))==1:
+                messages.error(request,'address2 is not valid')
+                return redirect('add_address')
+
             if not country:
                 messages.error(request,'country is required')
                 return  redirect('add_address')
+
+            if not re.match(r'^[A-Za-z]*$', country):
+                messages.error(request, 'country is not valid.')
+                return redirect('add_address')
+
+
+            if len(set(country))==1:
+                messages.error(request,'country is not valid')
+                return redirect('add_address')
+
+
             if not state:
                 messages.error(request,'state is required')
                 return  redirect('add_address')
+
+            if not re.match(r'^[A-Za-z]*$', state):
+                messages.error(request, 'state is not valid.')
+                return redirect('add_address')
+
+
+            if len(set(state))==1:
+                messages.error(request,'state is not valid')
+                return redirect('add_address')
+
+
             if not district:
                 messages.error(request,'district is required')
                 return  redirect('add_address')
+
+            if not re.match(r'^[A-Za-z]*$', district):
+                messages.error(request, 'district is not valid.')
+                return redirect('add_address')
+
+
+            if len(set(district))==1:
+                messages.error(request,'district is not valid')
+                return redirect('add_address')
+
+
             if not city:
                 messages.error(request,'city is required')
                 return  redirect('add_address')
+
+            if not re.match(r'^[A-Za-z]*$', city):
+                messages.error(request, 'city is not valid.')
+                return redirect('add_address')
+
+
+            if len(set(city))==1:
+                messages.error(request,'city is not valid')
+                return redirect('add_address')
+
+
             if not pincode:
                 messages.error(request,'pincode is required')
                 return  redirect('add_address')
@@ -234,14 +342,23 @@ def addaddress(request):
             pattern3 = r'^\d{6}$'
 
             if not re.match(pattern3,pincode):
-                messages.error(request,'pincode must have 6 numbers')
+                messages.error(request,'pincode not valid')
                 return redirect('add_address')
+
             if len(set(pincode))==1:
                 messages.error(request,'pincode is not valid')
                 return redirect('add_address')
+
+
             if not order_note:
                 messages.error(request,'order_note is required')
                 return  redirect('add_address')
+
+
+
+            if len(set(order_note))==1:
+                messages.error(request,'order_note is not valid')
+                return redirect('add_address')
 
             if Address.objects.filter(first_name=first_name):
                 messages.error(request,'firstname already exists')
@@ -319,64 +436,136 @@ def updateaddress(request, id):
             order_note = request.POST['Ordernote']
 
             if not first_name:
-                messages.error(request,'first name is required')
-                return  redirect('my_address')
+                messages.error(request, 'first name is required')
+                return redirect('add_address')
+
+            if not re.match(r'^[A-Za-z0-9@#$%^&+=]*$', first_name):
+                messages.error(request, 'firstname is not valid.')
+                return redirect('add_address')
+
+            if len(set(first_name)) == 1:
+                messages.error(request, 'firstname is not valid')
+                return redirect('add_address')
+
             if not last_name:
-                messages.error(request,'last name is required')
-                return  redirect('my_address')
+                messages.error(request, 'last name is required')
+                return redirect('add_address')
+
+            if not re.match(r'^[A-Za-z0-9@#$%^&+=]*$', last_name):
+                messages.error(request, 'last name is not valid.')
+                return redirect('add_address')
+
             if not email:
-                messages.error(request,'email is required')
-                return  redirect('my_address')
-            pattern1 = r'^[a-zA-Z0-9_%-+]+@gmail\.com$'
+                messages.error(request, 'email is required')
+                return redirect('add_address')
+
+            pattern1 = r'^[.a-zA-Z0-9_%-+]+@gmail\.com$'
             if not re.match(pattern1, email):
                 messages.error(request, 'Email is not valid')
-                return redirect('my_address')
-            if not phone_number:
-                messages.error(request,'phone number is required')
-                return  redirect('my_address')
+                return redirect('add_address')
 
-            if len(set(phone_number))==1:
-                messages.error(request,'Phone number is not valid')
-                return  redirect('my_address')
+            if not phone_number:
+                messages.error(request, 'phone number is required')
+                return redirect('add_address')
+
+            if len(set(phone_number)) == 1:
+                messages.error(request, 'Phone number is not valid')
+                return redirect('add_address')
 
             pattern = r'^\d{10}$'
             if not re.match(pattern, phone_number):
                 messages.error(request, 'Phone number must had 10 numbers')
-                return redirect('my_address')
+                return redirect('add_address')
+
             if not address_line1:
-                messages.error(request,'address1 is required')
-                return  redirect('my_address')
+                messages.error(request, 'address1 is required')
+                return redirect('add_address')
+
+
+            if len(set(address_line1)) == 1:
+                messages.error(request, 'address1 is not valid')
+                return redirect('add_address')
+
             if not address_line2:
-                messages.error(request,'address2 is required')
-                return  redirect('my_address')
+                messages.error(request, 'address2 is required')
+                return redirect('add_address')
+
+
+            if len(set(address_line2)) == 1:
+                messages.error(request, 'address2 is not valid')
+                return redirect('add_address')
+
             if not country:
-                messages.error(request,'country is required')
-                return  redirect('my_address')
+                messages.error(request, 'country is required')
+                return redirect('add_address')
+
+            if not re.match(r'^[A-Za-z]*$', country):
+                messages.error(request, 'country is not valid.')
+                return redirect('add_address')
+
+            if len(set(country)) == 1:
+                messages.error(request, 'country is not valid')
+                return redirect('add_address')
+
             if not state:
-                messages.error(request,'state is required')
-                return  redirect('my_address')
+                messages.error(request, 'state is required')
+                return redirect('add_address')
+
+            if not re.match(r'^[A-Za-z]*$', state):
+                messages.error(request, 'state is not valid.')
+                return redirect('add_address')
+
+            if len(set(state)) == 1:
+                messages.error(request, 'state is not valid')
+                return redirect('add_address')
+
             if not district:
-                messages.error(request,'district is required')
-                return  redirect('my_address')
+                messages.error(request, 'district is required')
+                return redirect('add_address')
+
+            if not re.match(r'^[A-Za-z]*$', district):
+                messages.error(request, 'district is not valid.')
+                return redirect('add_address')
+
+            if len(set(district)) == 1:
+                messages.error(request, 'district is not valid')
+                return redirect('add_address')
+
             if not city:
-                messages.error(request,'city is required')
-                return  redirect('my_address')
+                messages.error(request, 'city is required')
+                return redirect('add_address')
+
+            if not re.match(r'^[A-Za-z]*$', city):
+                messages.error(request, 'city is not valid.')
+                return redirect('add_address')
+
+            if len(set(city)) == 1:
+                messages.error(request, 'city is not valid')
+                return redirect('add_address')
+
             if not pincode:
-                messages.error(request,'pincode is required')
-                return  redirect('my_address')
+                messages.error(request, 'pincode is required')
+                return redirect('add_address')
 
             pattern3 = r'^\d{6}$'
 
-            if not re.match(pattern3,pincode):
-                messages.error(request,'pincode must have 6 numbers')
-                return redirect('my_address')
+            if not re.match(pattern3, pincode):
+                messages.error(request, 'pincode not valid')
+                return redirect('add_address')
 
-            if len(set(pincode))==1:
-                messages.error(request,'pincode is not valid')
-                return redirect('my_address')
+            if len(set(pincode)) == 1:
+                messages.error(request, 'pincode is not valid')
+                return redirect('add_address')
+
             if not order_note:
-                messages.error(request,'order_note is required')
-                return redirect('my_address')
+                messages.error(request, 'order_note is required')
+                return redirect('add_address')
+
+
+
+            if len(set(order_note)) == 1:
+                messages.error(request, 'order_note is not valid')
+                return redirect('add_address')
 
             if Address.objects.filter(first_name=first_name):
                 messages.error(request,'firstname already exists')

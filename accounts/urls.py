@@ -9,7 +9,8 @@ urlpatterns = [
     path('register',views.registerPage,name='register'),
     path('otp/',views.otpuser,name='otp'),
     path('resend_otp/',views.resend_otp,name='resend_otp'),
-    path('forgot_password',views.forgot_password,name   ='forgot_password'),
+    path('forgot_password', views.forgot_password, name='forgot_password'),
+    path('reset_password/', views.reset_password, name='reset_password'),
 
 
 ]

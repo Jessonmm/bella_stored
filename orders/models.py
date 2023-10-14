@@ -1,6 +1,7 @@
 from django.db import models
 from accounts.models import Account
 from shop.models import *
+from datetime import timedelta
 from django.utils import timezone
 from django.core.validators import MinValueValidator,MaxValueValidator
 # Create your models here.
@@ -112,8 +113,16 @@ class Coupons(models.Model):
     min_value = models.IntegerField(validators=[MinValueValidator(0)])
     valid_from = models.DateTimeField(auto_now_add=True)
     valid_at = models.DateField()
-    active = models.BooleanField(default=False)
 
+    @property
+    def valid_until(self):
+        return self.valid_from + timedelta(days=60)
+    active = models.BooleanField(default=True)
+
+    def save(self, *args, **kwargs):
+        if not self.valid_at:
+            self.valid_at = self.valid_from + timedelta(days=60)
+        super(Coupons, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.code

@@ -41,6 +41,7 @@
 
                          <th>Action</th>
                             <th>edit</th>
+                            <th>delete</th>
 
 
                     </tr>
@@ -70,11 +71,20 @@
                             </td>
 
                         <td>
+
                             <a href="#editEmployeeModal-{{ forloop.counter }}" class="edit" data-bs-toggle="modal">
                                 <i class="material-icons" data-bs-toggle="tooltip" title="Edit">&#xE254;</i>
                             </a>
 
                         </td>
+                        <td>
+
+                             <a href="#deleteEmployeeModal-{{ forloop.counter }}" class="delete" data-bs-toggle="modal">
+                                    <i class="material-icons" data-bs-toggle="tooltip" title="Delete">&#xE872;</i>
+                                </a>
+
+                        </td>
+
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -182,7 +192,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <a href="" type="submit" class="btn btn-danger">Delete</a>
+                    <a href="{% url 'delete-category' c.id %}"  type="submit" class="btn btn-danger">Delete</a>
                 </div>
             </form>
         </div>

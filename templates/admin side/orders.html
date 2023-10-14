@@ -188,16 +188,19 @@
                 </tbody>
             </table>
         </div>
-        <div class="clearfix">
-            <div class="hint-text">Showing <b>5</b> out of <b>25</b> entries</div>
+       <div class="clearfix">
+          <div class="hint-text">{{ order.paginator.count }}</b> entries</div>
+
             <ul class="pagination">
-                <li class="page-item disabled"><a href="#" class="page-link">Previous</a></li>
-                <li class="page-item"><a href="#" class="page-link">1</a></li>
-                <li class="page-item"><a href="#" class="page-link">2</a></li>
-                <li class="page-item active"><a href="#" class="page-link">3</a></li>
-                <li class="page-item"><a href="#" class="page-link">4</a></li>
-                <li class="page-item"><a href="#" class="page-link">5</a></li>
-                <li class="page-item"><a href="#" class="page-link">Next</a></li>
+                {% if order.has_previous %}
+                <li class="page-item "><a  href="?page={{ order.previous_page_number }}" class="page-link">Previous</a></li>
+                <li class="page-item"><a href="?page={{ order.previous_page_number }}" class="page-link">{{ order.previous_page_number }}</a></li>
+                {% endif %}
+                <li class="page-item active"><a href="#" class="page-link">{{ order.number }}</a></li>
+                 {% if order.has_next %}
+                <li class="page-item"><a href="?page={{ order.next_page_number }}" class="page-link">{{ order.next_page_number }}</a></li>
+                <li class="page-item"><a href="?page={{ order.next_page_number }}" class="page-link">Next</a></li>
+                 {% endif %}
             </ul>
         </div>
     </div>

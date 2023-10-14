@@ -10,7 +10,7 @@ class Products(models.Model):
     category_name = models.ForeignKey(Categories, on_delete=models.CASCADE)
     subcategory_name = models.ForeignKey(SubCategories, on_delete=models.CASCADE)
     price = models.IntegerField(blank=False)
-    stock = models.IntegerField()
+    stock = models.PositiveIntegerField(default=0)
     product_offer = models.FloatField(blank=False, null=False,default=0)
     image_1 = models.ImageField(upload_to='uploads', max_length=None)
     image_2 = models.ImageField(upload_to='uploads', max_length=None)
@@ -99,7 +99,6 @@ class VariationManager(models.Manager):
 
 variation_category_choices=(
     ('size','size'),
-    ('color','color'),
      )
 
 class Variation(models.Model):
@@ -107,7 +106,7 @@ class Variation(models.Model):
     variation_category=models.CharField(max_length=100,choices=variation_category_choices)
     variation_value=models.CharField(max_length=100)
     price_multiplier = models.IntegerField(default=1)
-    is_active=models.BooleanField(default=False)
+    is_active=models.BooleanField(default=True)
     variation_price=models.IntegerField(default=0)
     created_date=models.DateTimeField(auto_now=True)
 

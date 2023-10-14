@@ -13,7 +13,10 @@ from django.utils import timezone
 from category.models import  *
 from  orders.models import *
 from shop.models import  *
+from django.db.models import Sum, F
+from calendar import month_name
 import json
+import re
 # Create your views here.
 
 
@@ -87,8 +90,11 @@ def dashboard(request):
 
     current_year=date.today().year
 
-    total_sales_by_month= Order.objects.values('created_at__month').annotate(total_sales=Sum('order_total')).annotate(total_quantity_in_month=Sum('quantity'))
-
+    total_sales_by_month = Order.objects.values('created_at__month').annotate(
+        total_sales=Sum('order_total'),
+        total_quantity_in_month=Sum('quantity'),
+        month=F('created_at__month')
+    )
     paginator = Paginator(total_sales_by_month, per_page=3)
     page_number = request.GET.get('page', 1)
     page_total_sales_by_month = paginator.get_page(page_number)
@@ -134,8 +140,9 @@ def dashboard(request):
         12: 'December',
     }
 
+    # Adding month names to the result entries
     for entry in total_sales_by_month:
-        entry['month_name'] = month_names.get(entry['created_at__month'])
+        entry['month_name'] = month_name[entry['month']]
 
 
 
@@ -162,6 +169,9 @@ def dashboard(request):
     }
 
     return  render(request,'admin side/dashboard.html',context)
+
+
+
 
 
 
@@ -236,54 +246,91 @@ def coupons(request):
 
     return render(request, 'admin side/coupons.html', context)
 
+def listcoupon(request,id):
+    coupons = Coupons.objects.get(id=id)
+    if coupons.active:
+        coupons.active=False
+        coupons.save()
+        messages.success(request, 'coupon deactivated')
 
-@staff_member_required(login_url = 'admin_login')
+        return redirect('coupons')
+    else:
+        coupons.active=True
+        coupons.save()
+        messages.success(request, 'coupon activated')
+
+        return redirect('coupons')
+
+
+
+@staff_member_required(login_url='admin_login')
 def addcoupon(request):
+    today_date = date.today()
     if request.method == 'POST':
         try:
             code = request.POST['Code']
             discount = request.POST['Discount']
             min_value = request.POST['Min_Value']
-            valid_at = request.POST['Valid_At']
-            active = request.POST['Active']
+            valid_at_str = request.POST['Valid_At']  # Assuming Valid_At is a string in a specific format
+
 
             if not code:
-                messages.error(request,'code is required')
+                messages.error(request, 'code is required')
                 return redirect('coupons')
+
+            if not re.match(r'^[A-Za-z0-9@#$%^&+=]*$', code):
+                messages.error(request, 'code is not valid.')
+                return redirect('coupons')
+
             if not discount:
-                messages.error(request,'discount is required')
+                messages.error(request, 'discount is required')
                 return redirect('coupons')
+
+            if not re.match(r'^[0-9]*$', discount):
+                messages.error(request, 'discount is not valid.')
+                return redirect('coupons')
+
             if not min_value:
-                messages.error(request,'min value is required')
+                messages.error(request, 'min value is required')
                 return redirect('coupons')
-            if not valid_at:
-                messages.error(request,'valid_at is required')
+
+            if not re.match(r'^[0-9]*$', min_value):
+                messages.error(request, 'min_value is not valid.')
                 return redirect('coupons')
-            if  not active:
-                messages.error(request,'active is required')
+
+            if not valid_at_str:
+                messages.error(request, 'valid_at is required')
                 return redirect('coupons')
+
+            valid_at_date = datetime.strptime(valid_at_str, '%Y-%m-%d').date()
+
+            if valid_at_date <= today_date:
+                messages.error(request, 'valid_at must be after today\'s date')
+                return redirect('coupons')
+
+
+
             if Coupons.objects.filter(code=code):
-                messages.error(request,'code already exists')
-                return render('coupons')
+                messages.error(request, 'code already exists')
+                return render(request, 'coupons')
 
-
+            context={'today_date':today_date}
             coupon = Coupons(
                 code=code,
                 discount=discount,
                 min_value=min_value,
-                valid_at=valid_at,
-                active=active,
+                valid_at=valid_at_str,
             )
+
 
             coupon.save()
             messages.success(request, 'Coupon added successfully')
             return redirect('coupons')
 
         except Exception as e:
-
             return redirect('coupons')
 
-    return render(request, 'admin side/coupons.html')
+    return render(request, 'admin side/coupons.html',context)
 
 
 
@@ -309,36 +356,56 @@ def editcoupon(request):
 
 @staff_member_required(login_url = 'admin_login')
 def updatecoupon(request, coupon_id):
+    today_date = date.today()
     if request.method == 'POST':
         try:
             code = request.POST['Code']
             discount = request.POST['Discount']
             min_value = request.POST['Min_Value']
-            valid_at = request.POST['Valid_At']
-            active = request.POST['Active']
+            valid_at_str = request.POST['Valid_At']
+
 
             if not code:
-                messages.error(request,'code is required')
+                messages.error(request, 'code is required')
                 return redirect('coupons')
+
+            if not re.match(r'^[A-Za-z0-9@#$%^&+=]*$', code):
+                messages.error(request, 'code is not valid.')
+                return redirect('coupons')
+
             if not discount:
-                messages.error(request,'discount is required')
+                messages.error(request, 'discount is required')
                 return redirect('coupons')
+
+            if not re.match(r'^[0-9]*$', discount):
+                messages.error(request, 'discount is not valid.')
+                return redirect('coupons')
+
             if not min_value:
-                messages.error(request,'min value is required')
+                messages.error(request, 'min value is required')
                 return redirect('coupons')
-            if not valid_at:
-                messages.error(request,'valid_at is required')
+
+            if not re.match(r'^[0-9]*$', min_value):
+                messages.error(request, 'min_value is not valid.')
                 return redirect('coupons')
-            if  not active:
-                messages.error(request,'active is required')
+
+            if not valid_at_str:
+                messages.error(request, 'valid_at is required')
                 return redirect('coupons')
+
+            valid_at_date = datetime.strptime(valid_at_str, '%Y-%m-%d').date()
+
+            if valid_at_date <= today_date:
+                messages.error(request, 'valid_at must be after today\'s date')
+                return redirect('coupons')
+
+
 
             coupon = Coupons.objects.get(id=coupon_id)
             coupon.code=code
             coupon.discount=discount
             coupon.min_value=min_value
-            coupon.valid_at=valid_at
-            coupon.active=active
+            coupon.valid_at=valid_at_str
             coupon.save()
             messages.success(request, 'Coupon updated successfully')
             return redirect('coupons')
@@ -371,7 +438,7 @@ def deletecoupon(request, coupon_id):
 def orders(request):
     order=Order.objects.filter(is_ordered=True).order_by('-id')
 
-    paginator = Paginator(order, per_page=4)
+    paginator = Paginator(order, per_page=5)
     page_number = request.GET.get('page', 1)
     page_order = paginator.get_page(page_number)
     context={'order':page_order}
@@ -440,12 +507,36 @@ def addcategory(request):
         if not name:
             messages.error(request,'category name is required')
             return redirect('categories')
+
+        if not re.match(r'^[A-Za-z]*$', name):
+            messages.error(request, 'category name is not valid.')
+            return redirect('categories')
+
+        if len(set(name)) == 1:
+            messages.error(request, 'category name is not valid')
+            return redirect('categories')
+
         if not category_offer:
             messages.error(request,'category offer is required')
             return redirect('categories')
+
+        if not re.match(r'^[0-9]*$', category_offer):
+            messages.error(request, 'category offer is not valid.')
+            return redirect('categories')
+
+        if len(set(category_offer)) == 1:
+            messages.error(request, 'category offer is not valid')
+            return redirect('categories')
+
         if not description:
             messages.error(request,'description is required')
             return redirect('categories')
+
+
+        if len(set(description)) == 1:
+            messages.error(request, 'description is not valid')
+            return redirect('categories')
+
         if Categories.objects.filter(name=name):
             messages.error(request,'category already exists')
             return  redirect('categories')
@@ -483,17 +574,37 @@ def updatedcategory(request, category_id):
         description = request.POST['Description']
 
         if not name:
-            messages.error(request,'category name is required')
+            messages.error(request, 'category name is required')
             return redirect('categories')
+
+        if not re.match(r'^[A-Za-z]*$', name):
+            messages.error(request, 'category name is not valid.')
+            return redirect('categories')
+
+        if len(set(name)) == 1:
+            messages.error(request, 'category name is not valid')
+            return redirect('categories')
+
         if not category_offer:
-            messages.error(request,'category offer is required')
+            messages.error(request, 'category offer is required')
             return redirect('categories')
+
+        if not re.match(r'^[0-9]*$', category_offer):
+            messages.error(request, 'category offer is not valid.')
+            return redirect('categories')
+
+        if len(set(category_offer)) == 1:
+            messages.error(request, 'category offer is not valid')
+            return redirect('categories')
+
         if not description:
-            messages.error(request,'description is required')
+            messages.error(request, 'description is required')
             return redirect('categories')
-        if Categories.objects.filter(name=name):
-            messages.error(request,'category already exists')
-            return  redirect('categories')
+
+        if len(set(description)) == 1:
+            messages.error(request, 'description is not valid')
+            return redirect('categories')
+
 
         category = Categories.objects.get(id=category_id)
         category.name=name
@@ -505,6 +616,16 @@ def updatedcategory(request, category_id):
     else:
         return redirect('categories')
 
+@staff_member_required(login_url='admin_login')
+def deletecategory(request, category_id):
+    try:
+        category = Categories.objects.get(id=category_id)
+        category.delete()
+        messages.success(request, 'category deleted successfully')
+    except Categories.DoesNotExist:
+        messages.error(request, 'category does not exist')
+
+    return redirect('categories')
 
 
 def listcategories(request,id):
@@ -527,11 +648,13 @@ def listcategories(request,id):
 @staff_member_required(login_url = 'admin_login')
 def subcategories(request):
     subcategories = SubCategories.objects.all()
+    categories=Categories.objects.all()
     paginator = Paginator(subcategories, per_page=4)
     page_number = request.GET.get('page', 1)
     page_subcategories = paginator.get_page(page_number)
     context = {
-        'subcategories': page_subcategories
+        'subcategories': page_subcategories,
+        'categories':categories,
     }
 
     return render(request,'admin side/subcategory.html',context)
@@ -540,30 +663,49 @@ def subcategories(request):
 
 @staff_member_required(login_url='admin_login')
 def addsubcategory(request):
+    categories = Categories.objects.all()
+    for c in categories:
+        print(c.name)
     if request.method == 'POST':
-        name = request.POST['Name']
-        category_name = request.POST['Category']
-        description = request.POST['Description']
+        name = request.POST.get('Name')
+        category_name = request.POST.get('Category')
+        description = request.POST.get('Description')
 
         if not name:
             messages.error(request, 'Subcategory name is required')
             return redirect('subcategory')
+        if not re.match(r'^[A-Za-z\s]+$', name):
+            messages.error(request, 'Subcategory name is not valid.')
+            return redirect('subcategory')
+
+        if len(set(name)) == 1:
+            messages.error(request, 'Subcategory name is not valid')
+            return redirect('subcategory')
         if not category_name:
             messages.error(request, 'Category name is required')
             return redirect('subcategory')
+        if not re.match(r'^[A-Za-z\s]+$', category_name):
+            messages.error(request, 'Category name is not valid.')
+            return redirect('subcategory')
+
+        if len(set(category_name)) == 1:
+            messages.error(request, 'Category name is not valid')
+            return redirect('subcategory')
+
         if not description:
             messages.error(request, 'Description is required')
             return redirect('subcategory')
-        if SubCategories.objects.filter(name=name):
-            messages.error(request, 'Subcategory already exists')
+
+        if len(set(description)) == 1:
+            messages.error(request, 'Description is not valid')
             return redirect('subcategory')
+
+
         try:
             category_instance = Categories.objects.get(name=category_name)
         except Categories.DoesNotExist:
             messages.error(request, 'Category does not exist')
             return redirect('subcategory')
-
-
 
         subcategories = SubCategories(
             name=name,
@@ -575,7 +717,7 @@ def addsubcategory(request):
         messages.success(request, 'Subcategory added successfully')
         return redirect('subcategory')
 
-    return render(request, 'admin side/subcategory.html')
+    return render(request, 'admin_side/subcategory.html', {'categories': categories })
 
 
 
@@ -595,19 +737,39 @@ def updatedsubcategory(request, subcategory_id):
         category_name=request.POST['Category']
         description = request.POST['Description']
 
-
         if not name:
             messages.error(request, 'Subcategory name is required')
+            return redirect('subcategory')
+        if not re.match(r'^[A-Za-z]*$', name):
+            messages.error(request, 'Subcategory name is not valid.')
+            return redirect('subcategory')
+
+        if len(set(name)) == 1:
+            messages.error(request, 'Subcategory name is not valid')
             return redirect('subcategory')
         if not category_name:
             messages.error(request, 'Category name is required')
             return redirect('subcategory')
+        if not re.match(r'^[A-Za-z]*$', category_name):
+            messages.error(request, 'Category name is not valid.')
+            return redirect('subcategory')
+
+        if len(set(category_name)) == 1:
+            messages.error(request, 'Category name is not valid')
+            return redirect('subcategory')
+
         if not description:
             messages.error(request, 'Description is required')
             return redirect('subcategory')
+
+        if len(set(description)) == 1:
+            messages.error(request, 'description is not valid')
+            return redirect('subcategory')
+
         if SubCategories.objects.filter(name=name):
             messages.error(request, 'Subcategory already exists')
             return redirect('subcategory')
+
         try:
             category_instance = Categories.objects.get(name=category_name)
         except Categories.DoesNotExist:
@@ -659,12 +821,17 @@ def list_subcategory(request,id):
 @staff_member_required(login_url = 'admin_login')
 def products(request):
     products = Products.objects.all()
+    subcategories = SubCategories.objects.all()
+    categories=Categories.objects.all()
+
     paginator = Paginator(products, per_page=4)
     page_number = request.GET.get('page',1)
     page_products = paginator.get_page(page_number)
 
     context={
-        'products':page_products
+        'products':page_products,
+        'categories':categories,
+        'subcategories':subcategories,
 
     }
     return  render(request,'admin side/products.html',context)
@@ -703,18 +870,60 @@ def addproduct(request):
         if not products_name:
             messages.error(request,'product name is required')
             return redirect('product')
+
+
+
+        if len(set(products_name)) == 1:
+            messages.error(request, 'product name is not valid')
+            return redirect('product')
+
+
+
         if not category_name:
             messages.error(request,'category name is required')
             return redirect('product')
+
+        if not re.match(r'^[A-Za-z]*$', category_name):
+            messages.error(request, 'category name is not valid.')
+            return redirect('product')
+
+        if len(set(category_name)) == 1:
+            messages.error(request, 'category name is not valid')
+            return redirect('product')
+
+
         if not subcategory_name:
             messages.error(request,'subcategory name is required')
             return redirect('product')
+
+        if not re.match(r'^[A-Za-z]*$', subcategory_name):
+            messages.error(request, 'subcategory name is not valid.')
+            return redirect('product')
+
+        if len(set(subcategory_name)) == 1:
+            messages.error(request, 'subcategory name is not valid')
+            return redirect('product')
+
+
         if not price:
             messages.error(request,'price is required')
             return redirect('product')
+
+        if not re.match(r'^[0-9]*$', price):
+            messages.error(request, 'price is not valid.')
+            return redirect('product')
+
+
+
         if not stock:
             messages.error(request,'stock is required')
             return redirect('product')
+
+        if not re.match(r'^[0-9]*$', stock):
+            messages.error(request, 'stock is not valid.')
+            return redirect('product')
+
+
         if not image_1:
             messages.error(request,'image1 is required')
             return redirect('product')
@@ -730,11 +939,16 @@ def addproduct(request):
         if not image_5:
             messages.error(request,'image5 is required')
             return redirect('product')
+
         if not description:
             messages.error(request,'description name is required')
             return redirect('product')
+        if len(set(description)) == 1:
+            messages.error(request, 'description is not valid')
+            return redirect('product')
+
         if Products.objects.filter(product_name=products_name):
-            messages.error('product already exists')
+            messages.error(request,'product already exists')
             return redirect('product')
 
         try:
@@ -802,6 +1016,63 @@ def updateproduct(request, product_id):
         image_4 = request.FILES.get('Image4')
         image_5 = request.FILES.get('Image5')
         description = request.POST.get('Description')
+        if not product_name:
+            messages.error(request, 'product name is required')
+            return redirect('product')
+
+
+
+        if len(set(product_name)) == 1:
+            messages.error(request, 'product name is not valid')
+            return redirect('product')
+
+        if not category_name:
+            messages.error(request, 'category name is required')
+            return redirect('product')
+
+        if not re.match(r'^[A-Za-z]*$', category_name):
+            messages.error(request, 'category name is not valid.')
+            return redirect('product')
+
+        if len(set(category_name)) == 1:
+            messages.error(request, 'category name is not valid')
+            return redirect('product')
+
+        if not subcategory_name:
+            messages.error(request, 'subcategory name is required')
+            return redirect('product')
+
+        if not re.match(r'^[A-Za-z]*$', subcategory_name):
+            messages.error(request, 'subcategory name is not valid.')
+            return redirect('product')
+
+        if len(set(subcategory_name)) == 1:
+            messages.error(request, 'subcategory name is not valid')
+            return redirect('product')
+
+        if not price:
+            messages.error(request, 'price is required')
+            return redirect('product')
+
+        if not re.match(r'^[0-9]*$', price):
+            messages.error(request, 'price is not valid.')
+            return redirect('product')
+
+        if not stock:
+            messages.error(request, 'stock is required')
+            return redirect('product')
+
+        if not re.match(r'^[0-9]*$', stock):
+            messages.error(request, 'stock is not valid.')
+            return redirect('product')
+
+
+        if not description:
+            messages.error(request, 'description name is required')
+            return redirect('product')
+        if len(set(description)) == 1:
+            messages.error(request, 'description is not valid')
+            return redirect('product')
 
         try:
             try:
@@ -818,7 +1089,7 @@ def updateproduct(request, product_id):
 
 
 
-            product.name =  product_name
+            product.product_name =  product_name
             product.category_name = category_instance
             product.subcategory_name = subcategory_instance
             product.price = price
@@ -855,6 +1126,176 @@ def deleteproduct(request,product_id):
     messages.success(request,'product deleted successfully')
     products.delete()
     return redirect('product')
+
+
+
+@staff_member_required(login_url = 'admin_login')
+def variation(request):
+    variations = Variation.objects.all()
+    products = Products.objects.all()
+
+    paginator = Paginator(variations, per_page=4)
+    page_number = request.GET.get('page', 1)
+    page_variation = paginator.get_page(page_number)
+    context={
+        'variations': page_variation,
+        'products':products,
+    }
+    return render(request,'admin side/variations.html',context)
+
+
+@staff_member_required(login_url = 'admin_login')
+def addvariation(request):
+    if request.method == 'POST':
+        product_name= request.POST['product']
+        variation_category=request.POST['variation_category']
+        variation_value = request.POST['variation_value']
+        if not product_name:
+            messages.error(request,'product name is required')
+            return redirect('variations')
+
+        if len(set(product_name)) == 1:
+            messages.error(request, 'product name is not valid')
+            return redirect('variations')
+
+
+        if not variation_category:
+            messages.error(request,'variation_category is required')
+            return redirect('variations')
+
+        if not re.match(r'^[A-Za-z]*$', variation_category):
+            messages.error(request, 'variation_category is not valid.')
+            return redirect('variations')
+
+        if len(set(variation_category)) == 1:
+            messages.error(request, 'variation_category is not valid')
+            return redirect('variations')
+
+
+
+        if not variation_value:
+            messages.error(request,'variation_value is required')
+            return redirect('variations')
+
+        if not re.match(r'^[A-Z]*$', variation_value):
+            messages.error(request, 'variation_value is not valid.')
+            return redirect('variations')
+
+        if len(set(variation_value)) == 1:
+            messages.error(request, 'variation_value is not valid')
+            return redirect('variations')
+
+        try:
+            product = Products.objects.get(product_name=product_name)  # Fetch the Products instance
+        except Products.DoesNotExist:
+            messages.error(request, 'Product does not exist')
+            return redirect('variations')
+
+
+        variations=Variation(
+            product=product,
+            variation_category=variation_category,
+            variation_value=variation_value,
+
+        )
+        messages.success(request,'variation added successfully')
+        variations.save()
+        return  redirect('variations')
+
+    return render(request,'admin side/variations.html')
+
+
+
+@staff_member_required(login_url = 'admin_login')
+def editvariation(request):
+    variations = Variation.objects.all()
+    context = {
+        'variations': variations,
+    }
+    return render(request, 'admin side/variations.html', context)
+
+
+@staff_member_required(login_url = 'admin_login')
+def updatedvariation(request, variation_id):
+    if request.method == 'POST':
+        product_name = request.POST['product']
+        variation_category=request.POST['variation_category']
+        variation_value = request.POST['variation_value']
+
+        if not product_name:
+            messages.error(request, 'product name is required')
+            return redirect('variations')
+
+        if len(set(product_name)) == 1:
+            messages.error(request, 'product name is not valid')
+            return redirect('variations')
+
+        if not variation_category:
+            messages.error(request, 'variation_category is required')
+            return redirect('variations')
+
+        if not re.match(r'^[A-Za-z]*$', variation_category):
+            messages.error(request, 'variation_category is not valid.')
+            return redirect('variations')
+
+        if len(set(variation_category)) == 1:
+            messages.error(request, 'variation_category is not valid')
+            return redirect('variations')
+
+        if not variation_value:
+            messages.error(request, 'variation_value is required')
+            return redirect('variations')
+
+        if not re.match(r'^[A-Z]*$', variation_value):
+            messages.error(request, 'variation_value is not valid.')
+            return redirect('variations')
+
+        if len(set(variation_value)) == 1:
+            messages.error(request, 'variation_value is not valid')
+            return redirect('variations')
+
+        try:
+            product = Products.objects.get(product_name=product_name)  # Fetch the Products instance
+        except Products.DoesNotExist:
+            messages.error(request, 'Product does not exist')
+            return redirect('variations')
+
+        variation = Variation.objects.get(id=variation_id)
+        variation.product=product
+        variation.variation_category=variation_category
+        variation.variation_value=variation_value
+        messages.success(request,'variation updated sucessfully')
+        variation.save()
+        return redirect('variations')
+    else:
+        return redirect('variations')
+
+@staff_member_required(login_url='admin_login')
+def deletevariation(request, variation_id):
+    try:
+        variation = Variation.objects.get(id=variation_id)
+        variation.delete()
+        messages.success(request, 'variation deleted successfully')
+    except Variation.DoesNotExist:
+        messages.error(request, 'variation does not exist')
+
+    return redirect('variations')
+
+
+def listvariation(request,id):
+    variations = Variation.objects.get(id=id)
+    if variations.is_active:
+        variations.is_active=False
+        variations.save()
+        messages.success(request, 'variation deactivated')
+
+        return  redirect('variations')
+    else:
+        variations.is_active=True
+        variations.save()
+        messages.success(request, 'variation   activated')
+
+        return  redirect('variations')
 
 
 

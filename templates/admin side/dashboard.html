@@ -15,32 +15,40 @@
 
 {% block content%}
 
- 	<div class="container-fluid p-0">
+ 	<div   class="container-fluid p-0">
 
 					<h1 class="h3 mb-3"><strong>Sales </strong> Analytics</h1>
 
 					<div class="row">
-						<div class="col-xl-12 col-xxl-5 d-flex">
-							<div class="w-100">
-								<div class="row">
-									<div class="col-sm-6">
-										<div class="card">
-											<div class="card-body">
-												<div class="row">
-													<div class="col mt-0">
+
+						<div id="contentToDownload"  class="col-xl-12 col-xxl-5 d-flex">
+
+
+							<div id='printMe' class="w-100">
+                                 	 <button onclick="printDiv('printMe')" class="btn border-dark"
+                                      style="padding: 0px 50px 0px 50px; background-color: white; color: black;">Print</button>
+
+
+								<div   class="row">
+									<div   class="col-sm-6">
+										<div  class="card">
+											<div  class="card-body">
+												<div  class="row">
+													<div  class="col mt-0">
 														<h5 class="card-title">Total quantity</h5>
 													</div>
 
 													<div class="col-auto">
-														<div class="stat text-primary">
+														<div  class="stat text-primary">
 															<i class="align-middle" data-feather="truck"></i>
 														</div>
 													</div>
 												</div>
-												<h1 class="mt-1 mb-3">{{quantity}}</h1>
+												<h1  class="mt-1 mb-3">{{quantity}}</h1>
 
 											</div>
 										</div>
+
 										<div class="card">
 											<div class="card-body">
 												<div class="row">
@@ -58,7 +66,9 @@
 
 											</div>
 										</div>
+
 									</div>
+
 									<div class="col-sm-6">
 										<div class="card">
 											<div class="card-body">
@@ -103,16 +113,19 @@
 
 
 					<div class="row">
-						<div class="col-12 col-md-6 col-xxl-3 d-flex order-2 order-xxl-3">
-							<div class="card flex-fill w-100">
-								<div class="card-header">
+
+
+						<div   class="col-12 col-md-6 col-xxl-3 d-flex order-2 order-xxl-3">
+							<div   class="card flex-fill w-100">
+								<div  class="card-header">
 
 									<h5 class="card-title mb-0">Trending products</h5>
+
 								</div>
 								<div class="card-body d-flex">
 									<div class="align-self-center w-100">
 										<div class="py-3">
-											<div class="chart chart-xs">
+											<div  class="chart chart-xs">
 												<canvas id="chartjs-dashboard-pie"></canvas>
 											</div>
 										</div>
@@ -136,7 +149,7 @@
 
 
 						<div class="col-12 col-md-6 col-xxl-3 d-flex order-1 order-xxl-1">
-							<div class="card flex-fill">
+							<div  class="card flex-fill">
 								<div class="card-header">
 
 									<h5 class="card-title mb-0">Calendar</h5>
@@ -154,12 +167,14 @@
 
 
 		              	<div class="col-12 col-md-12 col-xxl-6 d-flex order-3 order-xxl-2">
-							<div class="card flex-fill w-100">
-								<div class="card-header">
+							<div  class="card flex-fill w-100">
+
 
 									<h5 class="card-title mb-0">Montly sales</h5>
+						        <div class="card-header">
 								</div>
 								<div class="card-body px-4">
+
 									<div  style="height:212px;">
 									<canvas id="chartjs-dashboard-bar"></canvas>
 
@@ -168,26 +183,32 @@
 							</div>
 						</div>
 
-		                            	<div class="col-12 col-md-12 col-xxl-6 d-flex order-3 order-xxl-2">
+
+		                            	<div  class="col-12 col-md-12 col-xxl-6 d-flex order-3 order-xxl-2">
 							<div class="card flex-fill w-100">
 								<div class="card-header">
 
 									<h5 class="card-title mb-0">Yearly sales</h5>
 								</div>
-								<div class="card-body px-4">
+								<div  class="card-body px-4">
 									<div  style="height:350px;">
 									<canvas id="chartjs-dashboard-line"></canvas>
 
 									</div>
 								</div>
+
 							</div>
+
 						</div>
 		            <div class="row">
 						<div class="col-12 col-md-6 col-xxl-3 d-flex order-2 order-xxl-3">
-							<div class="card flex-fill w-100">
+							<div id='printMe2' class="card flex-fill w-100">
 								<div class="card-header">
 
+										 <button onclick="printDiv('printMe2')" class="btn border-dark"
+   														style="padding: 0px 50px 0px 50px; background-color: white; color: black;">Print</button>
 									<h5 class="card-title mb-0">Total sales by date</h5>
+
 								</div>
 								<div class="card-body d-flex">
 									<div class="align-self-center w-100">
@@ -234,11 +255,15 @@
 							</div>
 						</div>
 
+
 						<div class="col-12 col-md-6 col-xxl-3 d-flex order-1 order-xxl-1">
-							<div class="card flex-fill">
+							<div id='printMe3' class="card flex-fill">
 								<div class="card-header">
 
+									<button onclick="printDiv('printMe3')" class="btn border-dark"
+                                    style="padding: 0px 50px 0px 50px; background-color: white; color: black;">Print</button>
 									<h5 class="card-title mb-0">Most selling product</h5>
+
 								</div>
 								<div class="card-body d-flex">
 									<div class="align-self-center w-100">
@@ -272,10 +297,13 @@
 
 					<div class="row">
 						<div class="col-12 col-md-6 col-xxl-3 d-flex order-2 order-xxl-3">
-							<div class="card flex-fill w-100">
+							<div id='printMe4' class="card flex-fill w-100">
 								<div class="card-header">
 
+                                 	 <button onclick="printDiv('printMe4')" class="btn border-dark"
+                                   style="padding: 0px 50px 0px 50px; background-color: white; color: black;">Print</button>
 									<h5 class="card-title mb-0">Total sales by year</h5>
+
 								</div>
 								<div class="card-body d-flex">
 									<div class="align-self-center w-100">
@@ -312,6 +340,7 @@
                     {% endif %}
                 </ul>
             </div>
+
 										<div class="py-3">
 											<div class="chart chart-xs">
 											</div>
@@ -322,8 +351,11 @@
 						</div>
 
 								<div class="col-12 col-md-6 col-xxl-3 d-flex order-2 order-xxl-3">
-							<div class="card flex-fill w-100">
-					<div class="card-header">
+							<div id='printMe5' class="card flex-fill w-100">
+					        <div class="card-header">
+
+								  <button onclick="printDiv('printMe5')" class="btn border-dark"
+   								style="padding: 0px 50px 0px 50px; background-color: white; color: black;">Print</button>
 
 									<h5 class="card-title mb-0">Total sales by month</h5>
 								</div>
@@ -371,7 +403,23 @@
 							</div>
 						</div>
 
-	<script>
+
+
+						<script>
+    function printDiv(divName) {
+        var printContents = document.getElementById(divName).innerHTML;
+        var originalContents = document.body.innerHTML;
+
+        document.body.innerHTML = printContents;
+
+        window.print();
+
+        document.body.innerHTML = originalContents;
+
+    }
+</script>
+
+<script>
 		document.addEventListener("DOMContentLoaded", function() {
 			var ctx = document.getElementById("chartjs-dashboard-line").getContext("2d");
 			var gradient = ctx.createLinearGradient(0, 0, 0, 225);

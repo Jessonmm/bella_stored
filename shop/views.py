@@ -35,7 +35,7 @@ def store(request,category_slug=None,subcategory_slug=None):
         categories=Categories.objects.filter(is_listed=True)
         for c in categories:
          print(c.name)
-        subcategories=SubCategories.objects.filter(is_available=True)
+        subcategories=SubCategories.objects.filter(is_available=True).order_by('name')
         products=Products.objects.all().filter(is_available=True).order_by('product_name')
         for c in products:
          print(c.product_name)

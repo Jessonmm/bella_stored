@@ -9,6 +9,7 @@ urlpatterns = [
 
     path('razorpay/', views.razorpay, name='razorpay'),
     path("cash_on_delivery/<str:order_number>/", views.cash_on_delivery, name='cash_on_delivery'),
+    path('wallet_payment/<str:order_number>/', views.wallet_payment, name='wallet_payment'),
     path('my-orders/', views.my_orders, name='my-orders'),
     path('order-details/<int:order_id>', views.order_details, name='order-details'),
     path("cancel_order/<int:id>/",views.cancel_order,name='cancel_order'),

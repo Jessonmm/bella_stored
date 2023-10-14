@@ -21,6 +21,7 @@
             <div class="row">
                 <div class="col-12 col-md-6">
                     <h2>Manage <b>Sub Categories</b></h2>
+
                 </div>
                 <div class="col-12 col-md-6 d-flex justify-content-end">
                     <a href="#addEmployeeModal" class="btn btn-success" data-bs-toggle="modal">
@@ -45,6 +46,7 @@
 
                         <th>Action</th>
                         <th>Edit</th>
+                        <th>delete</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -58,8 +60,9 @@
 
                          <td>{{ c.category }}</td>
 
+
                          <td>
-                                {% if not c.is_available %}
+                                {% if  c.is_available %}
                                 <form action="{% url 'list-subcategory' c.id %}" method="POST">
                                     {% csrf_token %}
                                     <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modal{{ c.id }}">
@@ -80,6 +83,13 @@
                             <a href="#editEmployeeModal-{{ forloop.counter }}" class="edit" data-bs-toggle="modal">
                                 <i class="material-icons" data-bs-toggle="tooltip" title="Edit">&#xE254;</i>
                             </a>
+
+                        </td>
+                           <td>
+
+                             <a href="#deleteEmployeeModal-{{ forloop.counter }}" class="delete" data-bs-toggle="modal">
+                                    <i class="material-icons" data-bs-toggle="tooltip" title="Delete">&#xE872;</i>
+                                </a>
 
                         </td>
                     </tr>
@@ -103,6 +113,7 @@
             </ul>
         </div>
     </div>
+
 </div>
 <!-- Add Modal HTML -->
 <div id="addEmployeeModal" class="modal fade">
@@ -122,7 +133,12 @@
 
                     <div class="form-group">
                         <label for="category">Category</label>
-                        <input type="text" name="Category" class="form-control" id="category" >
+                  <select name="Category" class="form-control" id="category_name">
+                            <option value="0">--Select Category--</option>
+                        {% for category in categories %}
+                            <option value="{{ category.name }}">{{ category.name }}</option>
+                        {% endfor %}
+                  </select>
                     </div>
                     <div class="form-group">
                         <label for="description">Description</label>
@@ -156,8 +172,13 @@
 
                      <div class="form-group">
                         <label for="category">Category</label>
-                        <input type="text" name="Category" value="{{c.category}}" class="form-control" id="categories" >
-                    </div>
+                   <select name="Category" class="form-control" id="category_name">
+                            <option  value="{{c.category}}">{{c.category}}</option>
+                        {% for category in categories %}
+                            <option value="{{ category.name }}">{{ category.name }}</option>
+                        {% endfor %}
+                  </select>
+                     </div>
                     <div class="form-group">
                         <label for="edit-description">Description</label>
                         <textarea class="form-control" name="Description" id="edit-description" required>{{ c.description }}</textarea>

@@ -12,10 +12,21 @@ urlpatterns = [
 
 
     path('coupons/', views.coupons, name='coupons'),
+    path('list-coupons/<int:id>/', views.listcoupon, name='list-coupons'),
+
     path('add-coupon/', views.addcoupon, name='add-coupon'),
     path('edit-coupon/', views.editcoupon, name='edit-coupon'),
     path('update-coupon/<str:coupon_id>/', views.updatecoupon, name='update-coupon'),
     path('delete-coupon/<str:coupon_id>', views.deletecoupon, name='delete-coupon'),
+
+
+    path('add-variation/', views.addvariation, name='add-variation'),
+    path('edit-variation/', views.editvariation, name='edit-variation'),
+    path('updated-variation/<str:variation_id>/', views.updatedvariation, name='updated-variation'),
+    path('list-variations/<int:id>/', views.listvariation, name='list-variation'),
+    path('delete-variation/<str:variation_id>', views.deletevariation, name='delete-variation'),
+    path('variations/', views.variation, name='variations'),
+
 
     path('product/', views.products, name='product'),
     path('list-product/<int:id>/',views.listproduct, name='list-product'),
@@ -27,9 +38,10 @@ urlpatterns = [
     path('add-category/', views.addcategory, name='add-category'),
     path('updated-category/<str:category_id>/', views.updatedcategory, name='updated-category'),
     path('list-category/<int:id>/', views.listcategories, name='list-category'),
+    path('delete-category/<str:category_id>', views.deletecategory, name='delete-category'),
     path('categories/', views.categories, name='categories'),
 
-
+    #
     path('add-subcategory/', views.addsubcategory, name='add-subcategory'),
     path('list-subcategory/<int:id>/',views.list_subcategory, name='list-subcategory'),
     path('updated-subcategory/<str:subcategory_id>/', views.updatedsubcategory, name='updated-subcategory'),

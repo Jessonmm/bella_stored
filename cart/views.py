@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.cache import never_cache
-from  django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from shop.models import Products, Variation
 from django.http import JsonResponse
 from django.contrib import messages
@@ -65,9 +65,8 @@ def cart(request, total=0, quantity=0, cart_items=None):
 
         for c in cart_items:
             c.full_prices=grand_total
-            print(c.full_prices)
             c.save()
-        print(grand_total)
+
 
 
     except ObjectDoesNotExist:
@@ -295,9 +294,13 @@ def checkout(request):
             cart_items = CartItem.objects.filter(cart=cart, is_active=True)
 
         for cart_item in cart_items:
+            if cart_item.quantity>cart_item.product.stock:
+                messages.error(request, f"Sorry, there is not enough stock for {cart_item.product.product_name}.")
+                return redirect('cart')
             total += int(cart_item.price) * int(cart_item.quantity)
             quantity += cart_item.quantity
 
+        print(quantity)
         tax = round(int((5 * total) / 100))
         shipping = round(int((2 * total) / 100))
 

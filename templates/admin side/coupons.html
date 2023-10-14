@@ -40,11 +40,12 @@
                         <th>Coupon_Code</th>
                         <th>Discount</th>
                         <th>Min_Value</th>
-                         <th>Valid_From</th>
-                         <th>Valid_At</th>
-                         <th>Active</th>
+                        <th>valid_from</th>
+                        <th>valid_at</th>
 
-                         <th>Actions</th></th>
+                         <th>Action</th></th>
+                         <th>Edit</th></th>
+                         <th>Delete</th></th>
 
 
                     </tr>
@@ -56,18 +57,39 @@
                         <td>{{ c.code }}</td>
                         <th>{{ c.discount }}</th>
                         <th>{{ c.min_value }}</th>
-                         <th>{{ c.valid_from }}</th>
-                         <th>{{ c.valid_at }}</th>
-                         <th>{{ c.active }}</th>
+                        <th>{{ c.valid_from }}</th>
+                        <th>{{ c.valid_at }}</th>
+                         <td>
+                                {% if c.active%}
+                                <form action="{% url 'list-coupons' c.id %}" method="POST">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modal{{ c.id }}">
+                                        <span class="badge bg-danger">ACTIVATED</span>
+                                    </button>
+                                </form>
+                                {% else %}
+                                <form action="{% url 'list-coupons' c.id %}" method="POST">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modal{{ c.id }}">
+                                        <span class="badge bg-success">DEACTIVATED</span>
+                                    </button>
+                                </form>
+                                {% endif %}
+                            </td>
 
                         <td>
                             <a href="#editEmployeeModal-{{ forloop.counter }}" class="edit" data-bs-toggle="modal">
                                 <i class="material-icons" data-bs-toggle="tooltip" title="Edit">&#xE254;</i>
                             </a>
+
+                        </td>
+                        <td>
+
                             <a href="#deleteEmployeeModal-{{ forloop.counter }}" class="delete" data-bs-toggle="modal">
                                 <i class="material-icons" data-bs-toggle="tooltip" title="Delete">&#xE872;</i>
                             </a>
                         </td>
+
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -114,12 +136,9 @@
                     </div>
                     <div class="form-group">
                         <label for="valid_at">Valid_At</label>
-                        <input  type="date" class="form-control" name="Valid_At"  id="valid_at" >
+                        <input type="date" class="form-control" name="Valid_At" id="valid_at" min="{{ today_date }}">
                     </div>
-                    <div class="form-group">
-                        <label for="active">Active</label>
-                        <input  type="text" class="form-control" name="Active"  id="active" >
-                    </div>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -155,12 +174,10 @@
                     </div>
                     <div class="form-group">
                         <label for="valid_at">Valid_At</label>
+                        <input  type="text" class="form-control" value="{{c.valid_at}}"   id="edit-valid_a">
                         <input  type="date" class="form-control" value="{{c.valid_at}}" name="Valid_At"  id="edit-valid_at">
                     </div>
-                    <div class="form-group">
-                        <label for="active">Active</label>
-                        <input  type="text" class="form-control" value="{{c.active}}" name="Active"  id="edit-active">
-                    </div>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>

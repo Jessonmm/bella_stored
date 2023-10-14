@@ -109,16 +109,16 @@ def registerPage(request):
                 messages.error(request, 'Username is required')
                 return redirect('register')
 
-
-            if not email:
-                messages.error(request, 'Email is required')
+            if not re.match(r'^[A-Za-z0-9@#$%^&+=]*$', username):
+                messages.error(request, 'username is not valid.')
                 return redirect('register')
 
-            pattern1=r'^[a-zA-Z0-9_%-+]+@gmail\.com$'
 
-            if not re.match(pattern1,email):
-                messages.error(request,'Email is not valid')
+            if len(set(username))==1:
+                messages.error(request,'username is not valid')
                 return redirect('register')
+
+
 
             if not phone_number:
                 messages.error(request, 'Phone number is required')
@@ -126,8 +126,23 @@ def registerPage(request):
 
             pattern=r'^\d{10}$'
             if not  re.match(pattern,phone_number):
-                messages.error(request,'Phone number must had 10 numbers')
+                messages.error(request,'Phone number  is not valid')
                 return redirect('register')
+
+            if len(set(phone_number)) == 1:
+                messages.error(request, 'phone number is not valid')
+                return redirect('register')
+
+            if not email:
+                messages.error(request, 'Email is required')
+                return redirect('register')
+
+            pattern1=r'^[.a-zA-Z0-9_%-+]+@gmail\.com$'
+
+            if not re.match(pattern1,email):
+                messages.error(request,'Email is not valid')
+                return redirect('register')
+
 
             if not password:
                 messages.error(request,'password is required')
@@ -140,9 +155,20 @@ def registerPage(request):
                 messages.error(request, 'Passwords do not match')
                 return redirect('register')
 
+            if not re.match(r'^[A-Za-z0-9@#$%^&+=]*$', password):
+                messages.error(request, 'password is not valid.')
+                return redirect('register')
+
+            if not re.match(r'^[A-Za-z0-9@#$%^&+=]*$', password1):
+                messages.error(request, 'password is not valid.')
+                return redirect('register')
+
+            if len(set(password))==1:
+                messages.error(request,'password is not valid')
+                return redirect('register')
 
             if len(password)<=6:
-                messages.error(request,'Passwords must had 7 digits')
+                messages.error(request,'Password must had 7 digits')
                 return redirect('register')
 
             if len(password1)<=6:
@@ -206,45 +232,127 @@ def registerPage(request):
 
 
 
-
-
-
-
-
 def forgot_password(request):
-
-
-    if  request.method == 'POST':
+    if request.method == 'POST':
         email = request.POST['email']
+        if not email:
+            messages.error(request, 'Email is required')
+            return redirect('forgot_password')
 
+        pattern1 = r'^[.a-zA-Z0-9_%-+]+@gmail\.com$'
+
+        if not re.match(pattern1, email):
+            messages.error(request, 'Email is not valid')
+            return redirect('forgot_password')
         try:
             user = Account.objects.get(email=email)
         except Account.DoesNotExist:
             messages.error(request, 'No user found with that email address.')
             return redirect('forgot_password')
 
+        # Generate password reset token
+        token = default_token_generator.make_token(user)
+
+        # Send password reset email to the user
+        subject = 'Reset Your Password'
+        message = f'Please click the link below to reset your password:\n\n{request.build_absolute_uri("/reset_password/")}?email={email}&token={token}'
+        from_email = settings.EMAIL_HOST_USER
+        recipient_list = [email]
+
         try:
-            # Generate password reset token
-            token = default_token_generator.make_token(user)
-
-            # Send password reset email to the user
-            subject = 'Reset Your Password'
-            message = f'Please click the link below to reset your password:\n\n{request.build_absolute_uri("/reset_password/")}?email={email}&token={token}'
-            from_email = settings.EMAIL_HOST_USER
-            recipient_list = [email]
-
             send_mail(subject, message, from_email, recipient_list)
             messages.success(request, 'Password reset email sent. Please check your email for further instructions.')
-        except Account.DoesNotExist:
-            messages.error(request, 'No user found with that email address.')
         except smtplib.SMTPException as e:
             messages.error(request, 'Failed to send password reset email. Please try again later.')
-        except Exception as e:
-            messages.error(request, 'An error occurred. Please try again later.')
 
         return redirect('forgot_password')
 
     return render(request, 'accounts/forgot_password.html')
+
+
+def reset_password(request):
+    if request.method == 'GET':
+        email = request.GET.get('email')
+        token = request.GET.get('token')
+
+        try:
+            user = Account.objects.get(email=email)
+        except Account.DoesNotExist:
+            messages.error(request, 'Invalid password reset link.')
+            return redirect('forgot_password')
+
+        if not default_token_generator.check_token(user, token):
+            messages.error(request, 'Invalid password reset link.')
+            return redirect('forgot_password')
+
+        # Store the email and token in the session for password update
+        request.session['reset_email'] = email
+        request.session['reset_token'] = token
+
+        return render(request, 'accounts/reset_password.html')
+
+    elif request.method == 'POST':
+        email = request.session.get('reset_email')
+        token = request.session.get('reset_token')
+
+        if email is None or token is None:
+            messages.error(request, 'Invalid password reset link.')
+            return redirect('forgot_password')
+
+        try:
+            user = Account.objects.get(email=email)
+        except Account.DoesNotExist:
+            messages.error(request, 'Invalid password reset link.')
+            return redirect('forgot_password')
+
+        if not default_token_generator.check_token(user, token):
+            messages.error(request, 'Invalid password reset link.')
+            return redirect('forgot_password')
+
+        password1 = request.POST['password1']
+        password2 = request.POST['password2']
+
+        # Custom password validation
+        if not password2:
+            messages.error(request, 'password is required')
+            return redirect('reset_password')
+
+        if not password1:
+            messages.error(request, 'password is required')
+            return redirect('reset_password')
+
+        if len(password1) < 6 or len(password2) < 6:
+            messages.error(request, 'Password must be at least 6 characters long.')
+            return redirect('reset_password')
+
+
+        elif password1 != password2:
+            messages.error(request, 'Passwords do not match.')
+            return redirect('reset_password')
+
+
+        elif len(set(password1)) == 1:
+            messages.error(request, 'Password is not valid.')
+            return redirect('reset_password')
+
+        elif not re.match(r'^[A-Za-z0-9@#$%^&+=]*$', password1):
+            messages.error(request, 'Password is not valid.')
+            return redirect('reset_password')
+
+        else:
+            # Update the user's password
+            user.set_password(password1)
+            user.is_superuser = False
+            user.is_active = True
+            user.save()
+
+            messages.success(request, 'Password reset successful. You can now login with your new password.')
+            return redirect('login')
+
+        return redirect('reset_password')
+
+    return redirect('forgot_password')
+
 
 
 

@@ -46,10 +46,11 @@
                        <th>Subcategory_Name</th>
                         <th></th></th>
                            <th>Selling_price</th>
-                         <th></th></th>
-                         <th></th></th>
+
+
                         <th>Action</th>
                         <th>Edit</th>
+                        <th>Delete</th>
 
 
 
@@ -69,8 +70,7 @@
                    <td>{{ c.subcategory_name }}</td>
                          <th></th></th>
                                <td>{{ c.price }}</td>
-                         <th></th></th>
-                         <th></th></th>
+
                          <td>
                                 {% if c.is_available %}
                                 <form action="{% url 'list-product' c.id %}" method="POST">
@@ -92,6 +92,13 @@
                             <a href="#editEmployeeModal-{{forloop.counter}}" class="edit" data-bs-toggle="modal">
                                 <i class="material-icons" data-bs-toggle="tooltip" title="Edit">&#xE254;</i>
                             </a>
+                        </td>
+                           <td>
+
+                             <a href="#deleteEmployeeModal-{{ forloop.counter }}" class="delete" data-bs-toggle="modal">
+                                    <i class="material-icons" data-bs-toggle="tooltip" title="Delete">&#xE872;</i>
+                                </a>
+
                         </td>
                     </tr>
                     {% endfor %}
@@ -121,7 +128,7 @@
         <div class="modal-content">
             <form method="post" action="{% url 'add-product' %}" enctype="multipart/form-data">
              {% csrf_token %}
-                <div class="modal-header">
+                <div class="modal-header" >
                     <h4 class="modal-title">Add Product</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -133,12 +140,22 @@
 
                    <div class="form-group">
                           <label for="category">Category</label>
-                          <input type="text" name="Category" class="form-control" id="category" >
-                      </div>
+                     <select name="Category" class="form-control" id="category_name">
+                            <option value="0">--Select Category--</option>
+                        {% for category in categories %}
+                            <option value="{{ category.name }}">{{ category.name }}</option>
+                        {% endfor %}
+                  </select>
+                   </div>
                      <div class="form-group">
                           <label for="subcategory">Sub category</label>
-                          <input type="text" name="Subcategory" class="form-control" id="subcategory" >
-                      </div>
+                      <select name="Category" class="form-control" id="category_name">
+                            <option value="0">--Select Subcategory--</option>
+                        {% for subcategory in subcategories %}
+                            <option value="{{ subcategory.name }}">{{ subcategory.name }}</option>
+                        {% endfor %}
+                  </select>
+                     </div>
 
                         <div class="form-group">
                         <label for="price">Price</label>
@@ -202,12 +219,22 @@
                       </div>
                      <div class="form-group">
                         <label for="category">Category</label>
-                        <input type="text" name="Category" value="{{p.category_name}}" class="form-control" id="edit-category" >
-                    </div>
+                  <select name="Category" class="form-control" id="category">
+                            <option value="{{p.category_name}}">{{p.category_name}}</option>
+                        {% for category in categories %}
+                            <option value="{{ category.name }}">{{ category.name }}</option>
+                        {% endfor %}
+                  </select>
+                     </div>
                      <div class="form-group">
                           <label for="subcategory">Sub category</label>
-                          <input type="text" name="Subcategory" value="{{p.subcategory_name}}"  class="form-control" id="edit-subcategory">
-                      </div>
+                    <select name="Subcategory" class="form-control" id="category">
+                            <option value="{{p.subcategory_name}}">{{p.subcategory_name}}</option>
+                        {% for subcategory in subcategories %}
+                            <option value="{{ subcategory.name }}">{{ subcategory.name }}</option>
+                        {% endfor %}
+                  </select>
+                     </div>
                     <div class="form-group">
                           <label for="price">Price</label>
                           <input type="number" name="Price" value="{{p.price}}" class="form-control" id="edit-selling_price" >

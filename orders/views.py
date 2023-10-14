@@ -181,6 +181,97 @@ def place_order(request, total=0, quantity=0):
         return redirect('checkout')
 
 
+
+@login_required(login_url = 'accounts/login')
+@never_cache
+def wallet_payment(request, order_number):
+    try:
+        if not request.user.is_authenticated:
+            return redirect('login')
+        order = Order.objects.get(user=request.user, is_ordered=False, order_number=order_number)
+
+
+
+        wallet=Wallet.objects.get(user=request.user)
+        print(wallet.balance)
+        cart_items = CartItem.objects.filter(user=request.user)
+        order.is_ordered = True
+
+        payment = Payment(
+            user=request.user,
+            payment_id=order.order_number,
+            order_id=order.order_number,
+            payment_method='Wallet Payment',
+            amount_paid=order.order_total,
+            status=True,
+        )
+        payment.save()
+        order.payment = payment
+        order.save()
+        wallet.balance-=order.order_total
+        wallet.save()
+        print(order.order_total)
+
+        sub_total = 0  # Initialize subtotal
+
+        for cart_item in cart_items:
+            order_product = OrderProduct(
+                order=order,
+                user=request.user,
+                product_id=cart_item.product_id,
+                quantity=cart_item.quantity,
+                product_price=cart_item.product.offer_price(),
+                ordered=True,
+            )
+            order_product.save()
+
+            # Assuming variations and stock updates should be done here
+            order_product.variations.set(Variation.objects.all())
+            order_product.save()
+
+            product = Products.objects.get(id=cart_item.product_id)
+            product.stock -= cart_item.quantity
+            product.save()
+
+            # Calculate subtotal in the loop
+            sub_total += round(order_product.quantity * order_product.product_price)
+
+        # Clear cart
+        CartItem.objects.filter(user=request.user).delete()
+        ordered_product=OrderProduct.objects.filter(order_id=order.id)
+
+
+        tax = round(int((5 * sub_total) / 100))
+        shipping = round(int((2 * sub_total) / 100))
+
+        if shipping <= 18:
+            shipping = 0
+        elif shipping > 18 and shipping <= 35:
+            shipping = 35
+        else:
+            shipping = round(int((2 * sub_total) / 100))
+        grand_total = int(tax + sub_total + shipping)
+        discount=int(order.order_discount)
+
+        context={
+
+            'order':order,
+            'sub_total':sub_total,
+            'shipping':shipping,
+            'grand_total':grand_total,
+            'discount':discount,
+
+
+            'ordered_products':ordered_product,
+            'payment':payment,
+
+        }
+        return render(request, 'orders/wallet_success.html',context)
+    except ObjectDoesNotExist:
+        messages.error(request,'The order you are trying to access does not exist.')
+        return redirect('home')
+
+
 @login_required(login_url = 'accounts/login')
 @never_cache
 def cash_on_delivery(request, order_number):
@@ -320,6 +411,9 @@ def payments(request):
         return JsonResponse(data)
 
 
+
+
+
 @login_required(login_url = 'accounts/login')
 @never_cache
 def payments_completed(request):
@@ -457,7 +551,23 @@ def cancel_order(request, id):
             order.save()
             payment.status = False
             payment.save()
+
+
         elif payment.payment_method == "RazerPay":
+            order.status ='Cancelled'
+            for order_product in order_products:
+                product=order_product.product
+                product.stock+=order_product.quantity
+                order_product.quantity=0
+                order_product.save()
+                product.save()
+            messages.error(request,'order cancelled successfully')
+            order.save()
+            wallet.balance += float(payment.amount_paid)
+            wallet.save()
+            payment.status = False
+            payment.save()
+        elif payment.payment_method == "Wallet Payment":
             order.status ='Cancelled'
             for order_product in order_products:
                 product=order_product.product
@@ -517,6 +627,11 @@ def return_order(request, id):
         wallet.save()
         payment.save()
     elif payment.payment_method == 'RazerPay':
+        payment.status = False
+        wallet.balance += float(payment.amount_paid)
+        wallet.save()
+        payment.save()
+    elif payment.payment_method == 'Wallet Payment':
         payment.status = False
         wallet.balance += float(payment.amount_paid)
         wallet.save()

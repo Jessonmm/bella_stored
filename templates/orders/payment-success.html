@@ -68,7 +68,7 @@
 
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Payment successfully</title>
+    <title>Razorpay payment success</title>
     <meta name="description" content="description">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Favicon -->
@@ -95,7 +95,7 @@
         </div>
         <!--End Search Form Drawer-->
         <!--Top Header-->
-       <div class="top-header">
+        <div class="top-header">
     <div class="container-fluid">
         <div class="row">
             <div class="col-10 col-sm-8 col-md-5 col-lg-4">
@@ -164,7 +164,7 @@
                                   {% if  request.user.is_authenticated %}
                              <li class="lvl1 parent dropdown"><a href="#">Profile <i class="anm anm-angle-down-l"></i></a>
                           <ul class="dropdown">
-                          <li><a href="{% url 'profiles' %}" class="site-nav">My Account</a></li>
+                       <li><a href="{% url 'profiles' %}" class="site-nav">My Account</a></li>
                           <li><a href="{% url 'change-password' %}" class="site-nav">Change password</a></li>
                             <li><a href="{% url 'my_address' %}" class="site-nav">My Address</a></li>
                             <li><a href="{% url 'my-orders' %}" class="site-nav">Orders</a></li>
@@ -220,14 +220,12 @@
                                   {% if  request.user.is_authenticated %}
                              <li class="lvl1 parent dropdown"><a href="#">Profile <i class="anm anm-angle-down-l"></i></a>
                           <ul class="dropdown">
-                            <li><a href="{% url 'profiles' %}" class="site-nav">My Account</a></li>
+                         <li><a href="{% url 'profiles' %}" class="site-nav">My Account</a></li>
                           <li><a href="{% url 'change-password' %}" class="site-nav">Change password</a></li>
                             <li><a href="{% url 'my_address' %}" class="site-nav">My Address</a></li>
                             <li><a href="{% url 'my-orders' %}" class="site-nav">Orders</a></li>
                             <li><a href="{% url 'cart' %}" class="site-nav">Cart Page</a> </li>
                             <li><a href="{% url 'wallet' %}" class="site-nav">Wallet</a> </li>
-
-
                           </ul>
                                 </li>
                           {% endif %}
@@ -235,138 +233,150 @@
 
       </ul>
 	</div>
+	<!--End Mobile Menu-->
+
+    <!--Body Content-->
+    <div id="page-content">
+    	<!--Page Title-->
+    	<div class="page section-header text-center">
+			<div class="page-title">
+        		<div class="wrapper"><h1 class="page-width">Payment Successfully</h1></div>
+      		</div>
+		</div>
+        <!--End Page Title-->
 
 
-        <div class="container" style="margin-top: 50px;">
-  <center><i class="fas fa-check-circle" style="font-size: 72px;margin-bottom: 20px;color: #28A745;"></i></center>
-  <h2 class="text-center">Payment Successful</h2>
-<br>
-<div class="text-center">
-    <a href="{% url 'store' %}" class="btn btn-success">Shop more</a>
-    <input type="button" class="btn btn-danger ml-5" id="btnExport" value="Download Invoice" />
-</div>
-</div>
+        <div class="row">
+            <div class="col-md-12 mt-5">
+                <div class="card shadow">
+                    <div class="card-body text-center">
+                        <img width="100px" src="{% static 'img/order_confirm.webp' %}" alt="">
+                        <h1>Order confirmed</h1>
+                        <h4>Your item will be delivered soon</h4>
+                        <h3 class="text-danger">Thank you for your purchase!!</h3>
+                        <h4>Your tracking number is :
+
+
+                                {{order.order_number}}
+
+                        </h4>
+                        <div class="row py-3 d-flex justify-content-center">
+                            <div class="col-4">
+                                <a href="{% url 'home' %}" class="btn text-white" style="background-color: #7fad39;">Home</a>
+                                <input type="button" class="btn btn-danger ml-5" id="btnExport" value="Download Invoice" />
+                            </div>
+                        </div>
+
+                  <div class="container" style="background: #f1f1f1;" id="invoice">
+                      <div class="row invoice row-printable">
+                          <div class="col-md-12">
+                              <!-- col-lg-12 start here -->
+                              <div class="panel panel-default plain" id="dash_0">
+                                  <!-- Start .panel -->
+                                      <div class="row">
+                                          <!-- Start .row -->
+                                          <div class="col-lg-6">
+                                              <!-- col-lg-6 start here -->
+                                              <div class="invoice-details mt25">
+                                                  <div class="well">
+                                                      <ul class="list-unstyled text-left mt-3">
+
+                                                          <li><strong>Order Date:</strong> {{order.created_at}}</li>
+                                                          <li><strong>Payment Method:</strong> {{payment.payment_method}}</li>
+                                                          <li><strong>Status:</strong>Paid</li>
+
+                                                      </ul>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                          <!-- col-lg-6 end here -->
+                                          <div class="col-lg-6">
+                                              <!-- col-lg-6 start here -->
+                                              <div class="invoice-from">
+                                                  <ul class="list-unstyled text-right mt-3 mr-3">
+                                                      <li><strong>Shipping Address</strong></li>
+                                                      <li>{{order.full_name}}</li>
+                                                      <li>{{order.full_address}}</li>
+                                                      <li>{{order.city}}, {{order.state}}</li>
+                                                      <li>{{order.district}}</li>
+                                                  </ul>
+                                              </div>
+                                          </div>
+                                          <!-- col-lg-6 end here -->
+                                          <div class="col-lg-12 mt-5 mb-5">
+                                              <!-- col-lg-12 start here -->
+                                              <div class="invoice-items">
+                                                  <div class="table-responsive" style="overflow: hidden; outline: none;" tabindex="0">
+                                                      <table class="table" style="border:1px solid black">
+                                                          <thead class="thead-dark">
+                                                              <tr>
+                                                                  <th class="per70 text-center" style="border:1px solid white">Product Name</th>
+                                                                  <th class="per5 text-center" style="border:1px solid white">Qty</th>
+                                                                  <th class="per5 text-center" style="border:1px solid white">Price</th>
+                                                                  <th class="per25 text-center" style="border:1px solid white">Total</th>
+                                                              </tr>
+                                                          </thead>
+                                                          <tbody >
+                                                              {% for item in ordered_products %}
+                                                              <tr >
+                                                                  <td class="text-center" >{{item.product.product_name}}</td>
+
+                                                                  </td>
+                                                                  <td class="text-center" id="qnty{{forloop.counter}}" >{{item.quantity}}</td>
+                                                                  <td class="text-center" id="price{{forloop.counter}}" >{{item.product_price}}</td>
+                                                                  <td class="text-center" id="total{{forloop.counter}}" >{{item.sub_total}}</td>
+                                                              </tr>
+                                                              {% endfor %}
+                                                          </tbody>
+                                                           </table>
+                                                  </div>
+                                              </div>
+
+
+                                                               <div class="col-lg-12 mt-5 mb-5">
+
+                                                                  <div  class="text-right">Total:₹{{sub_total}} </div>
+
+                                                                  <div  class="text-right" style="margin-top: 10px;">Tax :₹{{order.tax}} </div>
+
+                                                                   {% if discount %}
+                                                                  <div  class="text-right" style="margin-top: 10px;">Discount: ₹{{ discount}} </div>
+                                                                    {% endif %}
+
+                                                                   <div  class="text-right" style="margin-top: 10px;">Shipping:{% if shipping == 0 %} free shipping {% else %} ₹{{shipping}}{% endif %}</div>
+                                                                  <div  class="text-right" style="margin-top: 10px;">Grand Total:₹{{order.order_total}} </div>
 
 
 
-<div class="container" style="margin: 0 auto;width: 50%;padding: 50px;background: #f1f1f1;margin-top: 50px;margin-bottom: 50px;" id="invoice">
-  <div class="row invoice row-printable">
-      <div class="col-md-12">
-          <!-- col-lg-12 start here -->
-          <div class="panel panel-default plain" id="dash_0">
-              <!-- Start .panel -->
-              <div class="panel-body p30">
-                  <div class="row">
-                      <!-- Start .row -->
-                      <div class="col-lg-6">
-                          <!-- col-lg-6 start here -->
-                          <div class="invoice-details mt25">
-                              <div class="well">
-                                  <ul class="list-unstyled mb0">
-                                      <li><strong>Order</strong>{{order_number}}</li>
-                                      <li><strong>Order Date:</strong> {{order.created_at}}</li>
-                                      <li><strong>Payment Method:</strong> {{payment.payment_method}}</li>
-                                      <li><strong>Status:</strong> Paid</li>
 
-                                  </ul>
-                              </div>
-                          </div>
-                      </div>
-                      <!-- col-lg-6 end here -->
-                      <div class="col-lg-6">
-                          <!-- col-lg-6 start here -->
-                          <div class="invoice-from">
-                              <ul class="list-unstyled text-right">
-                                  <li><strong>Invoiced To</strong></li>
-                                  <li>{{order.full_name}}</li>
-                                  <li>{{order.full_address}}</li>
-                                  <li>{{order.country}},{{order.city}}, {{order.state}}</li>
-                                  <li>{{order.district}}</li>
-                              </ul>
-                          </div>
-                      </div>
-                      <!-- col-lg-6 end here -->
-                      <div class="col-lg-12 mt-5 mb-5">
-                          <!-- col-lg-12 start here -->
-                          <div class="invoice-items">
-                              <div class="table-responsive" style="overflow: hidden; outline: none;" tabindex="0">
-                                  <table class="table" style="border:1px solid black">
-                                      <thead class="thead-dark">
-                                          <tr>
-                                              <th class="per70 text-center">Products</th>
-                                              <th class="per5 text-center">Qty</th>
-                                              <th class="per5 text-center">Price</th>
-                                              <th class="per25 text-center">Total</th>
-                                          </tr>
-                                      </thead>
-                                      <tbody >
-                                          {% for item in ordered_products %}
-                                          <tr >
-                                              <td style="border:1px solid black" >{{item.product.product_name}}
-                                                <p class="text-muted small">
-                                                    {% if item.variations.all %}
-                                                      {% for i in item.variations.all %}
-                                                        {{i.variation_category | capfirst}} : {{i.variation_value | capfirst}} <br>
-                                                      {% endfor %}
-
-                                                    {% endif %}
+                                              <div class="invoice-footer mt25">
+                                                  <p class="text-center">Thank you for shopping with us!
+                                                      <br>
+                                                      <b>Your order will be delivered soon...</b>
                                                   </p>
-                                              </td>
-                                              <td class="text-center" id="qnty{{forloop.counter}}" style="border:1px solid black">{{item.quantity}}</td>
-                                              <td class="text-center" id="price{{forloop.counter}}" style="border:1px solid black">{{item.product_price}} </td>
-                                              <td class="text-center" id="total{{forloop.counter}}" style="border:1px solid black"></td>
-                                          </tr>
-                                          {% endfor %}
-                                      </tbody>
-                                      <tfoot>
-                                          <tr>
-                                              <th colspan="3" class="text-right">Sub Total:</th>
-                                              <th class="text-center">₹{{subtotal}} </th>
-                                          </tr>
-                                          <tr>
-                                              <th colspan="3" class="text-right">Tax :</th>
-                                              <th class="text-center">₹{{order.tax}} </th>
-                                          </tr>
-                                          <tr>
-                                              <th colspan="3" class="text-right">Shipping :</th>
-                                              {% if order.shipping == 0 %}
-                                              <th class="text-center">free shipping</th>
-                                               {% else %}
-                                              <th class="text-center">₹{{order.shipping}} </th>
-                                               {% endif %}
-                                          </tr>
-
-                                          {% if order.order_discount %}
-
-                                          <tr>
-                                            <th colspan="3" class="text-right">Discount :</th>
-                                            <th class="text-center">₹{{order.order_discount}} </th>
-                                          </tr>
-
-                                          {% endif %}
-
-                                          <tr>
-                                              <th colspan="3" class="text-right">Grand Total:</th>
-                                              <th class="text-center">₹{{order.order_total}} </th>
-                                          </tr>
-                                      </tfoot>
-                                  </table>
+                                              </div>
+                                          </div>
+                                          <!-- col-lg-12 end here -->
+                                      </div>
+                                      <!-- End .row -->
+                                  </div>
                               </div>
+                              <!-- End .panel -->
                           </div>
-                          <div class="invoice-footer mt25">
-                              <p class="text-center">Thank you for shopping with us!</p>
-                          </div>
+                          <!-- col-lg-12 end here -->
                       </div>
-                      <!-- col-lg-12 end here -->
-                  </div>
-                  <!-- End .row -->
+                    </div>
               </div>
           </div>
-          <!-- End .panel -->
-      </div>
-      <!-- col-lg-12 end here -->
+
+        </div>
+    </div>
   </div>
-</div>
+
+
+
+
+
 
     <!--End Body Content-->
 
@@ -454,24 +464,14 @@
 <script src="{% static 'js/plugins.js' %}"></script>
 <script src="{% static 'js/popper.min.js' %}"></script>
 <script src="{% static 'js/lazysizes.js' %}"></script>
-<script src="{% static 'js/ main.js' %}"></script>
+<script src="{% static 'js/main.js' %}"></script>
+
 </div>
 </body>
 
-   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!-- belle/checkout.html   11 Nov 2019 12:44:33 GMT -->
+</html>
 
-    <script>
-      {% for item in ordered_products %}
-
-      var qnty = $('#qnty{{forloop.counter}}').html()
-      var price = $('#price{{forloop.counter}}').html()
-      var total = qnty * price
-      $('#total{{forloop.counter}}').html('₹'+total)
-      var price = $('#price{{forloop.counter}}').html('₹'+price)
-
-      {% endfor %}
-    </script>
 
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.22/pdfmake.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
@@ -493,10 +493,3 @@
             });
         });
     </script>
-
-</html>
-
-
-
-
-
