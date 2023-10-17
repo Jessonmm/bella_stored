@@ -161,12 +161,13 @@ def place_order(request, total=0, quantity=0):
 
             msg = f'An error occurred: {str(e)}'
 
-
-        order = Order.objects.get(user=current_user, is_ordered=False, order_number=order_number)
+        order = Order.objects.get(user=request.user, is_ordered=False, order_number=order_number)
+        wallet = Wallet.objects.get(user=request.user)
         context = {
             'order': order,
             'cart_items': cart_items,
             'total': total,
+            'wallet':wallet,
             'tax': tax,
             'total_quantity':total_quantity,
             'coupon_discount': coupon_discount,
@@ -188,32 +189,11 @@ def wallet_payment(request, order_number):
 
         order = Order.objects.get(user=request.user, is_ordered=False, order_number=order_number)
         wallet = Wallet.objects.get(user=request.user)
-
-
-
-        return render(request, 'orders/wallet_success.html', context)
-
-
-    except ObjectDoesNotExist:
-
-        messages.error(request, 'The order you are trying to access does not exist.')
-
-        return redirect('home')
-
-
-def wallet_payment(request, order_number):
-    try:
-        if not request.user.is_authenticated:
-            return redirect('login')
-
-        order = Order.objects.get(user=request.user, is_ordered=False, order_number=order_number)
-        wallet = Wallet.objects.get(user=request.user)
-        if wallet.balance < order.order_total:
-            messages.error(request, 'Insufficient funds in your wallet.')
+        if wallet.balance <  order.full_price:
+            messages.error(request, 'Insufficient balance in your wallet for this transaction.')
             return redirect('checkout')
 
         cart_items = CartItem.objects.filter(user=request.user)
-
         order.is_ordered = True
 
         payment = Payment(
@@ -280,15 +260,14 @@ def wallet_payment(request, order_number):
             'ordered_products': ordered_product,
             'payment': payment,
         }
-        # rest of the code remains the same
-        # ...
-
         return render(request, 'orders/wallet_success.html', context)
 
-    except ObjectDoesNotExist:
-        messages.error(request, 'The order you are trying to access does not exist.')
-        return redirect('home')
 
+    except ObjectDoesNotExist:
+
+        messages.error(request, 'The order you are trying to access does not exist.')
+
+        return redirect('home')
 
 
 

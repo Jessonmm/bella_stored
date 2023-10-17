@@ -45,6 +45,8 @@ def generate_otp(secret_key):
 
 @never_cache
 def otpuser(request):
+    if request.user.is_authenticated:
+        return redirect('home')
     if request.method == 'POST':
         user_otp = request.POST['otp']
         try:

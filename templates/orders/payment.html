@@ -353,10 +353,11 @@
 
                             <div class="container-fluid mt-4">
                                     <div class="row">
-
+                                        {%  if wallet.balance > order.order_total %}
                                         <button  class="btn ml-3 mb-3 col-11 btn-warning" style="height: 40px;" data-toggle="modal" data-target="#exampleModal1">
                                             <b>WALLET</b>
                                         </button>
+                                        {% endif %}
                                         <button  class="btn ml-3 mb-3 col-11 btn-warning" style="height: 40px;" data-toggle="modal" data-target="#exampleModal">
                                             <b>CASH ON DELIVERY</b>
                                         </button>
@@ -453,7 +454,7 @@
                                 <li><a href="#">Privacy policy</a></li>
                                 <li><a href="#">Terms &amp; condition</a></li>
                                 <li><a href="#">My Account</a></li>
-                            </ul>
+                            </ul>   
                         </div>
                         <div class="col-12 col-sm-12 col-md-3 col-lg-3 footer-links">
                         	<h4 class="h4">Customer Services</h4>
