@@ -59,7 +59,7 @@ def place_order(request, total=0, quantity=0):
 
     if not address:
         messages.error(request, 'Add address to place the order')
-        return redirect('checkout')
+        return redirect('checkout') 
 
     grand_total = 0
     total_quantity=0
@@ -143,7 +143,7 @@ def place_order(request, total=0, quantity=0):
 
 
 
-            data.full_total = round(grand_total)
+            data.full_total = int(round(grand_total))
             print(data.order_discount)
             print(data.order_total)
 
@@ -176,25 +176,44 @@ def place_order(request, total=0, quantity=0):
             'shipping':shipping,
         }
 
+
         return render(request, 'orders/payment.html', context)
     else:
         return redirect('checkout')
 
-
-
-@login_required(login_url = 'accounts/login')
-@never_cache
 def wallet_payment(request, order_number):
     try:
         if not request.user.is_authenticated:
             return redirect('login')
+
         order = Order.objects.get(user=request.user, is_ordered=False, order_number=order_number)
+        wallet = Wallet.objects.get(user=request.user)
 
 
 
-        wallet=Wallet.objects.get(user=request.user)
-        print(wallet.balance)
+        return render(request, 'orders/wallet_success.html', context)
+
+
+    except ObjectDoesNotExist:
+
+        messages.error(request, 'The order you are trying to access does not exist.')
+
+        return redirect('home')
+
+
+def wallet_payment(request, order_number):
+    try:
+        if not request.user.is_authenticated:
+            return redirect('login')
+
+        order = Order.objects.get(user=request.user, is_ordered=False, order_number=order_number)
+        wallet = Wallet.objects.get(user=request.user)
+        if wallet.balance < order.order_total:
+            messages.error(request, 'Insufficient funds in your wallet.')
+            return redirect('checkout')
+
         cart_items = CartItem.objects.filter(user=request.user)
+
         order.is_ordered = True
 
         payment = Payment(
@@ -208,7 +227,7 @@ def wallet_payment(request, order_number):
         payment.save()
         order.payment = payment
         order.save()
-        wallet.balance-=order.order_total
+        wallet.balance -= order.order_total
         wallet.save()
         print(order.order_total)
 
@@ -238,8 +257,7 @@ def wallet_payment(request, order_number):
 
         # Clear cart
         CartItem.objects.filter(user=request.user).delete()
-        ordered_product=OrderProduct.objects.filter(order_id=order.id)
-
+        ordered_product = OrderProduct.objects.filter(order_id=order.id)
 
         tax = round(int((5 * sub_total) / 100))
         shipping = round(int((2 * sub_total) / 100))
@@ -251,25 +269,27 @@ def wallet_payment(request, order_number):
         else:
             shipping = round(int((2 * sub_total) / 100))
         grand_total = int(tax + sub_total + shipping)
-        discount=int(order.order_discount)
+        discount = int(order.order_discount)
 
-        context={
-
-            'order':order,
-            'sub_total':sub_total,
-            'shipping':shipping,
-            'grand_total':grand_total,
-            'discount':discount,
-
-
-            'ordered_products':ordered_product,
-            'payment':payment,
-
+        context = {
+            'order': order,
+            'sub_total': sub_total,
+            'shipping': shipping,
+            'grand_total': grand_total,
+            'discount': discount,
+            'ordered_products': ordered_product,
+            'payment': payment,
         }
-        return render(request, 'orders/wallet_success.html',context)
+        # rest of the code remains the same
+        # ...
+
+        return render(request, 'orders/wallet_success.html', context)
+
     except ObjectDoesNotExist:
-        messages.error(request,'The order you are trying to access does not exist.')
+        messages.error(request, 'The order you are trying to access does not exist.')
         return redirect('home')
+
+
 
 
 @login_required(login_url = 'accounts/login')
@@ -651,6 +671,7 @@ def coupon(request):
             coupon_code = request.POST['coupon']
             grand_total = request.POST['grand_total']
             coupon_discount = 0
+
 
             try:
                 instance = UserCoupon.objects.get(user=request.user, coupon__code=coupon_code)

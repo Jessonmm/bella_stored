@@ -135,9 +135,8 @@
                      <div  class="text-center col-12 col-sm-12 col-md-12 col-lg-12">
 
                                  <div  id="otp-timer"  class="alert alert-info">OTP Timer: <span id="timer"></span><span id="sec"> seconds</span> </div>
-    <!-- Add a div for the "Resend OTP" link with an initial style of display:none -->
     <div id="resend-link" style="display:none;">
-      <a class='h3' href="{% url 'resend_otp' %}">Resend OTP</a>
+      <a class='h3' href="{% url 'resend_otp' %}"  onclick="resetTimer()">Resend OTP</a>
     </div>
 
                                 </div>
@@ -168,37 +167,87 @@
     <script src="{% static '/js/main.js' %}"></script>
   </div>
 </body>
+
+
+
 <script>
-  // Function to start the OTP timer
-  function startTimer(duration, display) {
-    var timer = duration, minutes, seconds;
-    var countdown = setInterval(function () {
-      minutes = parseInt(timer / 60, 10);
-      seconds = parseInt(timer % 60, 10);
+    var countdown;
+    function startTimer(duration, display) {
+      var startTime = localStorage.getItem('startTime');
 
-      minutes = minutes < 10 ? "0" + minutes : minutes;
-      seconds = seconds < 10 ? "0" + seconds : seconds;
-
-      display.textContent = minutes + ":" + seconds;
-
-      if (--timer < 0) {
-        clearInterval(countdown); // Stop the timer when it reaches 0
-        // Show the "Resend OTP" link
-        document.getElementById("resend-link").style.display = "block";
-        document.getElementById('OTP').style.display ='none';
-        document.getElementById('Hide').style.display ='none';
-        document.getElementById('Otps').style.display ='none';
-        document.getElementById('sec').style.display ='none';
-        display.textContent = "OTP VALID OUT";
-
+      if (!startTime) {
+        startTime = Date.now();
+        localStorage.setItem('startTime', startTime);
       }
-    }, 1000);
-  }
 
-  // Adjust the timer duration (in seconds) as needed
-  var timerDuration = 30    ; // 5 minutes
-  var display = document.querySelector("#timer");
-  startTimer(timerDuration, display);
-</script>
-<!-- belle/login.html   11 Nov 2019 12:22:27 GMT -->
+      countdown = setInterval(function () {
+        var currentTime = Date.now();
+        var elapsed = (currentTime - startTime) / 1000; // Calculate elapsed time in seconds
+
+        var timer = duration - elapsed; // Calculate remaining time
+
+        if (timer <= 0) {
+          clearInterval(countdown); // Stop the timer when it reaches 0
+          // Show the "Resend OTP" link
+          document.getElementById("resend-link").style.display = "block";
+          document.getElementById('OTP').style.display = 'none';
+          document.getElementById('Hide').style.display = 'none';
+          document.getElementById('Otps').style.display = 'none';
+          document.getElementById('sec').style.display = 'none';
+          document.getElementById('otp-timer').style.display = 'none';
+          document.getElementById('timer').style.display = 'none';
+          display.textContent = "OTP VALID OUT";
+        } else {
+          var minutes = parseInt(timer / 60, 10);
+          var seconds = parseInt(timer % 60, 10);
+
+          minutes = minutes < 10 ? "0" + minutes : minutes;
+          seconds = seconds < 10 ? "0" + seconds : seconds;
+
+          display.textContent = minutes + ":" + seconds;
+        }
+      }, 1000);
+    }
+
+    // Function to reset the timer to 30 seconds
+    function resetTimer() {
+      clearInterval(countdown); // Clear the existing countdown
+      localStorage.removeItem('startTime'); // Remove the stored start time from localStorage
+      startTimer(timerDuration, display); // Start the timer again with the initial duration
+      document.getElementById("resend-link").style.display = "none";
+      document.getElementById('otp-timer').style.display = 'none';
+      document.getElementById('sec').style.display = 'none';
+      document.getElementById('timer').style.display = 'none';
+
+    }
+
+    // Adjust the timer duration (in seconds) as needed
+    var timerDuration = 30; // 30 seconds
+    var display = document.querySelector("#timer");
+    startTimer(timerDuration, display);
+
+    // Call this function when the page is loaded to handle the timer reset
+    function handlePageLoad() {
+      var startTime = localStorage.getItem('startTime'); // Retrieve the stored start time
+      if (startTime) {
+        var currentTime = Date.now();
+        var elapsed = (currentTime - startTime) / 1000; // Calculate elapsed time in seconds
+        var remainingTime = timerDuration - elapsed;
+        if (remainingTime > 0) {
+          startTimer(remainingTime, display); // Start the timer with the remaining time
+        }
+      }
+    }
+
+    window.onload = handlePageLoad; // Call the function on page load
+  </script>
+</body>
+</html>
+
+
+</body>
+</html>
+
+
+
 </html>

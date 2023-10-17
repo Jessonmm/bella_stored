@@ -1181,10 +1181,6 @@ def addvariation(request):
             messages.error(request, 'variation_value is not valid.')
             return redirect('variations')
 
-        if len(set(variation_value)) == 1:
-            messages.error(request, 'variation_value is not valid')
-            return redirect('variations')
-
         try:
             product = Products.objects.get(product_name=product_name)  # Fetch the Products instance
         except Products.DoesNotExist:
@@ -1250,10 +1246,7 @@ def updatedvariation(request, variation_id):
             messages.error(request, 'variation_value is not valid.')
             return redirect('variations')
 
-        if len(set(variation_value)) == 1:
-            messages.error(request, 'variation_value is not valid')
-            return redirect('variations')
-
+    
         try:
             product = Products.objects.get(product_name=product_name)  # Fetch the Products instance
         except Products.DoesNotExist:

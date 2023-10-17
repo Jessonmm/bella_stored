@@ -20,8 +20,7 @@ import re
 
 
 def home(request):
-
-        return render(request, 'accounts/home.html')
+    return render(request, 'accounts/home.html')
 
 
 def generate_secret_key():
@@ -33,9 +32,6 @@ def generate_secret_key():
     except Exception as e:
         error_message = str(e)
         return 'Error: ' + error_message
-
-
-# Generate OTP using the secret key
 
 
 def generate_otp(secret_key):
@@ -68,8 +64,7 @@ def otpuser(request):
 
 @never_cache
 def resend_otp(request):
-    if request.user.is_authenticated:
-        return redirect('home')
+
 
     if 'otp' in request.session:
         # Generate and send a new OTP

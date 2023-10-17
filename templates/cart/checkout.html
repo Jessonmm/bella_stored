@@ -272,7 +272,11 @@
 
 
 
-
+    {% for message in messages %}
+                        <div class="alert alert-white text-center" role="alert">
+                        {{message}}
+                        </div>
+                        {% endfor %}
 
 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-3">
 
