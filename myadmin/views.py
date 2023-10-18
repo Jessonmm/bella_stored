@@ -32,19 +32,18 @@ def dashboard(request):
         earliest_order = Order.objects.earliest('created_at')
         earliest_month = earliest_order.created_at
     except ObjectDoesNotExist:
-        # Handle the case when there are no Order objects in the database
         earliest_month = None
 
     if earliest_month is not None:
-        # Do something with earliest_month, e.g., convert it to a string
         earliest_month_str = earliest_month.strftime("%Y-%m-%d")
     else:
-        # Handle the case when earliest_month is None (no Order objects)
         earliest_month_str = "No orders found"
 
-    # Generate labels starting from the earliest year
     labeled = []
-    start_year = 2012
+    start_year = 2023  # Replace 2023 with your desired initial value
+
+    # The rest of your code that uses 'start_year'
+
     try:
         current_year = start_year
     except ObjectDoesNotExist:
@@ -57,17 +56,17 @@ def dashboard(request):
 
     # Generate labels starting from the earliest month
     labels = []
-
     if earliest_month is not None:
         current_month = earliest_month.replace(day=1)
     else:
         # Handle the case when earliest_month is None
-        current_month = None  # You can set a default value or handle it accordingly
+        current_month = None  # or set it to a default value, or perform other appropriate handling
 
     month_names = [
         "Jan", "Feb", "Mar", "Apr", "May", "Jun",
         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
     ]
+
     for _ in range(12):
         if current_month is not None:
             labels.append(month_names[current_month.month - 1] + " " + str(current_month.year))
@@ -78,7 +77,7 @@ def dashboard(request):
             # Handle the case when current_month is None
             labels.append("N/A")  # or any other appropriate handling
 
-            # Query to retrieve monthlxy product sales data
+    # Query to retrieve monthly product sales data
     monthly_product_sales = Order.objects.annotate(
         month=TruncMonth('created_at')
     ).values('month').annotate(
