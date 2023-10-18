@@ -35,6 +35,13 @@ def dashboard(request):
         # Handle the case when there are no Order objects in the database
         earliest_month = None
 
+    if earliest_month is not None:
+        # Do something with earliest_month, e.g., convert it to a string
+        earliest_month_str = earliest_month.strftime("%Y-%m-%d")
+    else:
+        # Handle the case when earliest_month is None (no Order objects)
+        earliest_month_str = "No orders found"
+
     # Generate labels starting from the earliest year
     labeled = []
     start_year = 2012
@@ -72,7 +79,7 @@ def dashboard(request):
             # Handle the case when current_month is None
                 labels.append("N/A")  # or any other appropriate handling
 
-            # Query to retrieve monthly product sales data
+            # Query to retrieve monthlxy product sales data
     monthly_product_sales = Order.objects.annotate(
         month=TruncMonth('created_at')
     ).values('month').annotate(
