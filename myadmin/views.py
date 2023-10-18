@@ -4,6 +4,7 @@ from django.shortcuts import render,redirect,get_object_or_404
 from  django.contrib.auth import  authenticate,login,logout
 from django.db.models.functions import TruncMonth,TruncYear
 from django.core.paginator import Paginator
+from django.core.exceptions import  ObjectDoesNotExist
 from django.views.decorators.cache import never_cache
 from  django.contrib import messages
 from  accounts.models import Account
@@ -26,12 +27,22 @@ import re
 def dashboard(request):
 
     # Find the earliest created_at month in your data
-    earliest_month = Order.objects.earliest('created_at').created_at
-    start_year = earliest_month.year
+
+    try:
+        earliest_order = Order.objects.earliest('created_at')
+        earliest_month = earliest_order.created_at
+    except ObjectDoesNotExist:
+        # Handle the case when there are no Order objects in the database
+        earliest_month = None
 
     # Generate labels starting from the earliest year
     labeled = []
-    current_year = start_year
+    start_year = 2012
+    try:
+        current_year = start_year
+    except ObjectDoesNotExist:
+        current_year = None
+
 
     for _ in range(12):
         labeled.append(str(current_year))
@@ -39,19 +50,29 @@ def dashboard(request):
 
     # Generate labels starting from the earliest month
     labels = []
-    current_month = earliest_month.replace(day=1)  # Set day to 1 to ensure the start of the month
+
+    if earliest_month is not None:
+        current_month = earliest_month.replace(day=1)
+    else:
+        # Handle the case when earliest_month is None
+        current_month = None  # You can set a default value or handle it accordingly
+
     month_names = [
         "Jan", "Feb", "Mar", "Apr", "May", "Jun",
         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
     ]
 
     for _ in range(12):
-        labels.append(month_names[current_month.month - 1] + " " + str(current_month.year))
-        current_month = current_month.replace(day=1, month=(current_month.month % 12) + 1)
-        if current_month.month == 1:
-            current_month = current_month.replace(year=current_month.year + 1)
+        if current_month is not None:
+            labels.append(month_names[current_month.month - 1]) + " " + str(current_month.year)
+            current_month = current_month.replace(day=1, month=(current_month.month % 12) + 1)
+            if current_month.month == 1:
+                current_month = current_month.replace(year=current_month.year + 1)
+            else:
+            # Handle the case when current_month is None
+                labels.append("N/A")  # or any other appropriate handling
 
-    # Query to retrieve monthly product sales data
+            # Query to retrieve monthly product sales data
     monthly_product_sales = Order.objects.annotate(
         month=TruncMonth('created_at')
     ).values('month').annotate(
