@@ -70,6 +70,7 @@ def place_order(request, total=0, quantity=0):
 
     total_quantity+=quantity
     coupon_discount = 0
+
     discount=0
     tax = round(int((5 * total) / 100))
     shipping = round(int((2 * total) / 100))
@@ -160,9 +161,13 @@ def place_order(request, total=0, quantity=0):
         except Exception as e:
 
             msg = f'An error occurred: {str(e)}'
-
         order = Order.objects.get(user=request.user, is_ordered=False, order_number=order_number)
-        wallet = Wallet.objects.get(user=request.user)
+        try:
+
+            wallet = Wallet.objects.get(user=request.user)
+        except Wallet.DoesNotExist as e:
+            # Handle the case where the wallet doesn't exist
+            wallet = None
         context = {
             'order': order,
             'cart_items': cart_items,
@@ -176,8 +181,6 @@ def place_order(request, total=0, quantity=0):
             'coupon_code': coupon_code,
             'shipping':shipping,
         }
-
-
         return render(request, 'orders/payment.html', context)
     else:
         return redirect('checkout')
@@ -188,10 +191,6 @@ def wallet_payment(request, order_number):
             return redirect('login')
 
         order = Order.objects.get(user=request.user, is_ordered=False, order_number=order_number)
-        wallet = Wallet.objects.get(user=request.user)
-        if wallet.balance <  order.full_price:
-            messages.error(request, 'Insufficient balance in your wallet for this transaction.')
-            return redirect('checkout')
 
         cart_items = CartItem.objects.filter(user=request.user)
         order.is_ordered = True
