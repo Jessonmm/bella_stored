@@ -388,6 +388,11 @@
 
                                                        {% if prod.stock >  0 %}
                                                        {% if request.user.is_authenticated %}
+                                                       <div class="qtyField">
+                                                <a href="{% url 'product_remove' prod.id   %}" class="qtyBtn minus" ><i class="icon icon-minus"></i></a>
+                                                <input class="cart__qty-input qty qty-input" type="text" min="1" name="quantity" value="{{prod.stock}}" pattern="[0-9]*" disabled>
+                                                <a href="{% url 'product_update' prod.id  %}" class="qtyBtn plus" ><i class="icon icon-plus"></i></a>
+                                            </div>
                                                     <div class="product-form__item--submit">
                                                         <button type="submit" class="btn product-form__cart-submit">
                                                             Add to cart

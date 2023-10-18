@@ -259,90 +259,129 @@
         	<div class="row">
 
                 <div class="col-12 col-sm-12 col-md-12 col-lg-12 main-col product_data">
-                     {% if shipping == 0  %}
+
+
+
+                    <section class="cart_area">
+                        {% if shipping == 0  %}
                          {% if cart_items  %}
                 	<div class="alert alert-success text-uppercase" role="alert">
 						<i class="icon anm anm-truck-l icon-large"></i> &nbsp;<strong>Congratulations!</strong> You've got free shipping!
 					</div>
                        {% endif  %}
                         {% endif  %}
-                	<form action="#" method="post" class="cart style2">
-                		<table>
-                                <thead class="cart__row cart__header">
-                                   {% if not cart_items %}
-                                <tr>
-                                    <th colspan="2" class="text-center"></th>
-                                    <th class="text-center">The cart is empty</th>
-                                    <th class="text-center"></th>
-                                    <th class="action">&nbsp;</th>
-                                </tr>
-                            {% else %}
-                                <tr>
-                                    <th colspan="2" class="text-center">Product</th>
-                                    <th class="text-center">Price</th>
-                                    <th class="text-center">Quantity</th>
-                                    <th class="text-right">Total</th>
-                                    <th class="action">&nbsp;</th>
-                                     <th class="action">&nbsp;</th>
-                                     <th class="action">&nbsp;</th>
-                                </tr>
-                                 {% endif  %}
-                            </thead>
-                    		<tbody>
-                             {% for cart_item in cart_items %}
-                                <tr class="cart__row border-bottom line1 cart-flex border-top">
-                                 <td class="cart__image-wrapper cart-flex-item">
-                                        <a href="#"><img class="cart__image" src="{{ cart_item.product.image_1.url }}" width="140" height="150" alt="Elastic Waist Dress - Navy / Small"></a>
-                                    </td>
+    <div class="container">
+      <div class="cart_inner">
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Product</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Price</th>
+                <th scope="col">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+                    {% for cart_item in cart_items %}
+
+                    <tr>
+                        <td>
+                            <div class="media">
+                              <div class="d-flex">
+                                <img
+                                  src="{{cart_item.product.image_1.url}}" height=100 alt="" />
 
 
-                                   <td class="cart__meta small--text-left cart-flex-item">
-                                        <div class="list-view-item__title">
-                                            <a href="#">{{ cart_item.product.product_name }}</a>
-                                        </div>
+                              </div>
+                              <div class="media-body">
+                                <p>{{cart_item.product.product_name}}</p>
 
-                                        <div class="cart__meta-text">
-                                            Color: Navy<br>Size:
+                                <p>({{cart_item.product.subcategory_name}})</p>
+
+                                <p>
+                                  {% if cart_item.variations.all %}
+
                                             {% for variation in cart_item.variation.all %}
                                                 {% if variation.variation_category == 'size' %}
                                                     Size: {{ variation.variation_value }}<br>
                                                 {% endif %}
                                             {% endfor %}
-                                        </div>
-                                    </td>
-                                    <td class="cart__price-wrapper cart-flex-item">
-                                        <span class="money">₹{{ cart_item.price }}</span>
-                                    </td>
 
-                                    <td class="cart__update-wrapper cart-flex-item text-right">
-                                        <input type="hidden" value="{{prod.id}} " class="prod_id">
-                                        <div class="cart__qty text-center">
-                                            <div class="qtyField">
-                                                <a href="{% url 'cart_remove' cart_item.product.id cart_item.id  %}" class="qtyBtn minus" ><i class="icon icon-minus"></i></a>
-                                                <input class="cart__qty-input qty qty-input" type="text" min="1" name="quantity" value="{{cart_item.quantity}}" pattern="[0-9]*" disabled>
-                                                <a href="{% url 'cart_update' product_id=cart_item.product.id cart_item_id=cart_item.id %}" class="qtyBtn plus" ><i class="icon icon-plus"></i></a>
-                                            </div>
-                                        </div>
-                                    </td>
+                                  {% endif %}
 
-                                    <td class="text-right small--hide cart-price">
-                                        <div><span class="money">₹{{ cart_item.sub_total}}</span></div>
-                                    </td>
-                                    <td class="text-center small--hide"><a href="{% url 'remove_cart_item' cart_item.product.id cart_item.id %}" class="btn btn--secondary cart__remove" title="Remove tem"><i class="icon icon anm anm-times-l"></i></a></td>
-                                </tr>
-                             {% endfor %}
-                            </tbody>
-                    		<tfoot>
-                                <tr>
-                                    <td colspan="3" class="text-left"><a href="{% url 'store' %}" class="btn btn-secondary btn--small cart-continue">Continue shopping</a></td>
-                                    <td colspan="3" class="text-right">
+                                </p>
 
-                                    </td>
-                                </tr>
-                            </tfoot>
-                    </table>
-                    </form>
-               	</div>
+
+
+                              </div>
+                            </div>
+                          </td>
+
+
+                      <td class="product-quantity">
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                            <a href="{% url 'cart_remove' cart_item.product.id cart_item.id %}"
+                                class="btn btn-secondary">-</a>
+                            <button type="button"  class="btn btn-dark">{{cart_item.quantity}}</button>
+
+
+                            <a href="{% url 'cart_update' product_id=cart_item.product.id cart_item_id=cart_item.id %}"
+                                class="btn btn-secondary"><i ></i>+</a>
+                        </div>
+                        {% if  cart_item.quantity > cart_item.product.stock %}
+                        <h1 >Out of Stock</h1>
+                    {% endif %}
+                    </td>
+                        <td class="price-col">  ₹{{cart_item.price}}</td>
+
+                        <td class="total" id="total{{forloop.counter}}"> ₹{{cart_item.sub_total}} </td>
+                        <td class="product-close">
+                          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#removeModal{{ cart_item.id }}">
+                            Remove
+                          </button>
+
+                          <!-- Remove item confirmation modal -->
+                          <div class="modal fade" id="removeModal{{ cart_item.id }}" tabindex="-1" role="dialog" aria-labelledby="removeModal{{ cart_item.id }}Label" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h5 class="modal-title" id="removeModal{{ cart_item.id }}Label">Remove Item</h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                                <div class="modal-body">
+                                  Are you sure you want to remove "{{ cart_item.product.product_name }}" from your cart?
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                  <form action="{% url 'remove_cart_item' cart_item.product.id cart_item.id %}" method="POST">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger">Remove</button>
+                                  </form>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+
+                    </tr>
+                    {% endfor %}
+
+
+
+                    </tbody>
+            </table>
+        </div>
+    </div>
+    </div>
+
+</section>
+
+
+                    <div  class="text-left"><a href="{% url 'store' %}" class="btn btn-secondary btn--small cart-continue">Continue shopping</a></div>
+                </div>
 
 
                 <div class="container mt-4">
@@ -378,6 +417,8 @@
                               </div>
 
                               <a href="{% url 'checkout' %}" type="submit" name="checkout" id="cartCheckout" class="btn btn--small-wide checkout">Proceed To Checkout</a>
+                              <div class="paymnet-img"><img src="{% static '/images/payment-img.jpg ' %}" alt="Payment"></div>
+                              <p><a href="#;">Checkout with Multiple Addresses</a></p>
                             </div>
 
                         </div>

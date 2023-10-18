@@ -7,7 +7,8 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
 from django.template.loader import render_to_string
 from django.db.models import Q
-
+from cart.models import  *
+from  django.contrib import messages
 
 
 
@@ -99,6 +100,44 @@ def search(request):
             'error_message': error_message,
         }
         return render(request, 'includes/404.html', context)
+
+
+@login_required(login_url = 'login')
+@never_cache
+def cart_remove(request, product_id):
+    try:
+        if request.user.is_authenticated:
+            product = get_object_or_404(Products, id=product_id)
+        else:
+            product = get_object_or_404(Products, id=product_id)
+
+        if product.stock > 1:
+            product.stock -= 1
+            product.save()
+            messages.success(request,'item quantity reduced successfully')
+        else:
+            product.delete()
+
+    except Products.DoesNotExist:
+        messages.error(request, 'The selected item could not be found in your cart.')
+    except Exception as e:
+        messages.error(request, 'An error occurred while removing the item from your cart.')
+
+
+@login_required(login_url = 'login')
+@never_cache
+def cart_update(request, product_id):
+    try:
+        if request.user.is_authenticated:
+            product = get_object_or_404(Products, id=product_id)
+        else:
+            product = get_object_or_404(Products, id=product_id)
+        product.stock += 1
+        product.save()
+        messages.success(request,'item quantity added successfully')
+
+    except Products.DoesNotExist:
+        messages.error(request, 'The selected item could not be found in your cart.')
 
 
 
