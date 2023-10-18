@@ -68,16 +68,15 @@ def dashboard(request):
         "Jan", "Feb", "Mar", "Apr", "May", "Jun",
         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
     ]
-
     for _ in range(12):
         if current_month is not None:
-            labels.append(month_names[current_month.month - 1]) + " " + str(current_month.year)
+            labels.append(month_names[current_month.month - 1] + " " + str(current_month.year))
             current_month = current_month.replace(day=1, month=(current_month.month % 12) + 1)
             if current_month.month == 1:
                 current_month = current_month.replace(year=current_month.year + 1)
-            else:
+        else:
             # Handle the case when current_month is None
-                labels.append("N/A")  # or any other appropriate handling
+            labels.append("N/A")  # or any other appropriate handling
 
             # Query to retrieve monthlxy product sales data
     monthly_product_sales = Order.objects.annotate(
