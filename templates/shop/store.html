@@ -355,24 +355,24 @@
 
                     <hr>
                 	<div class="productList">
-                    	<!--Toolbar-->
-                        <button type="button" class="btn btn-filter d-block d-md-none d-lg-none"> Product Filters</button>
-                    	<div class="toolbar">
-                        	<div class="filters-toolbar-wrapper">
-                            	<div class="row">
-                                	<div class="col-4 col-md-4 col-lg-4 filters-toolbar__item collection-view-as d-flex justify-content-start align-items-center">
+    <!--Toolbar-->
+    <div class="toolbar">
+        <button type="button" class="btn btn-filter d-block d-md-none px-3 pl-3">Product Filters</button>
+        <div class="filters-toolbar-wrapper">
+            <div class="row">
+                <div class="col-12 col-md-4 col-lg-4 filters-toolbar__item collection-view-as d-flex justify-content-start align-items-center">
+                    <!-- Content for the first column -->
+                </div>
+                <div class="col-12 col-md-4 col-lg-4 text-center filters-toolbar__item filters-toolbar__item--count d-flex justify-content-center align-items-center">
+                    <!-- Content for the second column -->
+                    <span class="filters-toolbar__product-count"></span>
+                </div>
+                <!-- You can add more columns here if needed -->
 
-                                    </div>
-                                    <div class="col-4 col-md-4 col-lg-4 text-center filters-toolbar__item filters-toolbar__item--count d-flex justify-content-center align-items-center">
-                                    	<span class="filters-toolbar__product-count"></span>
-                                    </div>
-
-
-
-                                </div>
-                            </div>
-                        </div>
-                        <!--End Toolbar-->
+            </div>
+        </div>
+    </div>
+</div>
 
 
                         <div class="grid-products grid--view-items">
@@ -388,10 +388,10 @@
                                         <!-- start product image -->
                                         <a href="{{p.get_url}}">
                     <!-- image -->
-                                    <img class="" data-src="{{p.image_1.url}}" src="{{p.image_1.url}}" width="550" height="430" alt="image" title="product">
+                                    <img class="" data-src="{{p.image_1.url}}" src="{{p.image_1.url}}" width="390" height="310" alt="image" title="product">
                                     <!-- End image -->
                                     <!-- Hover image -->
-                                    <img class="hover" data-src="{{p.image_2.url}}" src="{{p.image_2.url}}" width="550" height="430"  alt="image" title="product">
+                                    <img class="hover" data-src="{{p.image_2.url}}" src="{{p.image_2.url}}" width="390" height="310"  alt="image" title="product">
                                     <!-- End hover image -->
                                 </a>
                                         <!-- end product image -->

@@ -58,7 +58,7 @@ def store(request,category_slug=None,subcategory_slug=None):
     if selected_size:
         products = products.filter(variation__variation_value=selected_size)
 
-    paginator = Paginator(products, per_page=3)
+    paginator = Paginator(products, per_page=6)
     page_number = request.GET.get('page', 1)
     page_products = paginator.get_page(page_number)
 
@@ -84,7 +84,7 @@ def search(request):
         products = Products.objects.order_by('-created_date').filter(Q(product_name__icontains=keyword))
         product_count = products.count()
 
-        paginator = Paginator(products, per_page=1)
+        paginator = Paginator(products, per_page=6)
         page_number = request.GET.get('page', 1)
         page_products = paginator.get_page(page_number)
 

@@ -23,6 +23,7 @@ def home(request):
     return render(request, 'accounts/home.html')
 
 
+
 def generate_secret_key():
     try:
         secret_key_length = 16

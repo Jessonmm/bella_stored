@@ -276,6 +276,7 @@
           <table class="table">
             <thead>
               <tr>
+                <th scope="col">Product image</th>
                 <th scope="col">Product</th>
                 <th scope="col">Quantity</th>
                 <th scope="col">Price</th>
@@ -291,9 +292,11 @@
                               <div class="d-flex">
                                 <img
                                   src="{{cart_item.product.image_1.url}}" height=100 alt="" />
-
+                         </td>
+                         <td>
 
                               </div>
+
                               <div class="media-body">
                                 <p>{{cart_item.product.product_name}}</p>
 
@@ -418,7 +421,6 @@
 
                               <a href="{% url 'checkout' %}" type="submit" name="checkout" id="cartCheckout" class="btn btn--small-wide checkout">Proceed To Checkout</a>
 
-                              <p><a href="#;">Checkout with Multiple Addresses</a></p>
                             </div>
 
                         </div>
