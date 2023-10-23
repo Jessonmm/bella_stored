@@ -700,9 +700,7 @@ def addsubcategory(request):
         if not name:
             messages.error(request, 'Subcategory name is required')
             return redirect('subcategory')
-        if not re.match(r'^[A-Za-z\s]+$', name):
-            messages.error(request, 'Subcategory name is not valid.')
-            return redirect('subcategory')
+
 
         if len(set(name)) == 1:
             messages.error(request, 'Subcategory name is not valid')
@@ -776,9 +774,7 @@ def updatedsubcategory(request, subcategory_id):
         if not category_name:
             messages.error(request, 'Category name is required')
             return redirect('subcategory')
-        if not re.match(r'^[A-Za-z]*$', category_name):
-            messages.error(request, 'Category name is not valid.')
-            return redirect('subcategory')
+
 
         if len(set(category_name)) == 1:
             messages.error(request, 'Category name is not valid')
@@ -909,9 +905,7 @@ def addproduct(request):
             messages.error(request,'category name is required')
             return redirect('product')
 
-        if not re.match(r'^[A-Za-z]*$', category_name):
-            messages.error(request, 'category name is not valid.')
-            return redirect('product')
+
 
         if len(set(category_name)) == 1:
             messages.error(request, 'category name is not valid')
@@ -922,9 +916,6 @@ def addproduct(request):
             messages.error(request,'subcategory name is required')
             return redirect('product')
 
-        if not re.match(r'^[A-Za-z]*$', subcategory_name):
-            messages.error(request, 'subcategory name is not valid.')
-            return redirect('product')
 
         if len(set(subcategory_name)) == 1:
             messages.error(request, 'subcategory name is not valid')
@@ -1056,9 +1047,7 @@ def updateproduct(request, product_id):
             messages.error(request, 'category name is required')
             return redirect('product')
 
-        if not re.match(r'^[A-Za-z]*$', category_name):
-            messages.error(request, 'category name is not valid.')
-            return redirect('product')
+
 
         if len(set(category_name)) == 1:
             messages.error(request, 'category name is not valid')
@@ -1068,9 +1057,7 @@ def updateproduct(request, product_id):
             messages.error(request, 'subcategory name is required')
             return redirect('product')
 
-        if not re.match(r'^[A-Za-z]*$', subcategory_name):
-            messages.error(request, 'subcategory name is not valid.')
-            return redirect('product')
+
 
         if len(set(subcategory_name)) == 1:
             messages.error(request, 'subcategory name is not valid')
