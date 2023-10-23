@@ -95,7 +95,7 @@
         </div>
         <!--End Search Form Drawer-->
         <!--Top Header-->
-        <div class="top-header">
+         <div class="top-header">
     <div class="container-fluid">
         <div class="row">
             <div class="col-10 col-sm-8 col-md-5 col-lg-4">
@@ -164,7 +164,7 @@
                                   {% if  request.user.is_authenticated %}
                              <li class="lvl1 parent dropdown"><a href="#">Profile <i class="anm anm-angle-down-l"></i></a>
                           <ul class="dropdown">
-                            <li><a href="{% url 'profiles' %}" class="site-nav">My Account</a></li>
+                           <li><a href="{% url 'profiles' %}" class="site-nav">My Account</a></li>
                           <li><a href="{% url 'change-password' %}" class="site-nav">Change password</a></li>
                             <li><a href="{% url 'my_address' %}" class="site-nav">My Address</a></li>
                             <li><a href="{% url 'my-orders' %}" class="site-nav">Orders</a></li>
@@ -197,6 +197,7 @@
         <!-- End Minicart Popup -->
     </div>
 
+    <!-- Search Form -->
 
 </div>
 
@@ -219,13 +220,12 @@
                                   {% if  request.user.is_authenticated %}
                              <li class="lvl1 parent dropdown"><a href="#">Profile <i class="anm anm-angle-down-l"></i></a>
                           <ul class="dropdown">
-                            <li><a href="{% url 'profiles' %}" class="site-nav">My Account</a></li>
+                        <li><a href="{% url 'profiles' %}" class="site-nav">My Account</a></li>
                           <li><a href="{% url 'change-password' %}" class="site-nav">Change password</a></li>
                             <li><a href="{% url 'my_address' %}" class="site-nav">My Address</a></li>
                             <li><a href="{% url 'my-orders' %}" class="site-nav">Orders</a></li>
                             <li><a href="{% url 'cart' %}" class="site-nav">Cart Page</a> </li>
                             <li><a href="{% url 'wallet' %}" class="site-nav">Wallet</a> </li>
-
 
                           </ul>
                                 </li>
@@ -234,8 +234,6 @@
 
       </ul>
 	</div>
-
-
     <!--Body Content-->
     <div id="page-content">
     	<!--Page Title-->
@@ -509,8 +507,6 @@
     <!--End Scoll Top-->
 
      <!-- Including Jquery -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
- <script src="{% static 'js/vendor/custom.js' %}"></script>
 <script src="{% static 'js/vendor/jquery-3.3.1.min.js' %}"></script>
 <script src="{% static 'js/vendor/jquery.cookie.js' %}"></script>
 <script src="{% static 'js/vendor/modernizr-3.6.0.min.js' %}"></script>
@@ -520,8 +516,7 @@
 <script src="{% static 'js/plugins.js' %}"></script>
 <script src="{% static 'js/popper.min.js' %}"></script>
 <script src="{% static 'js/lazysizes.js' %}"></script>
-<script src="{% static 'js/ main.js' %}"></script>
-</div>
+<script src="{% static 'js/main.js' %}"></script>
 </body>
 
 <!-- belle/cart-variant1.html   11 Nov 2019 12:44:32 GMT -->

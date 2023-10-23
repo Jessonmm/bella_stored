@@ -319,7 +319,7 @@
                             <div class="row d-flex align-content-center">
                                 <div class="col-12 d-block ml-2 d-flex">
                                     <p class="card-text mt-1 h5"><b class="text-center"></b></p>
-                                    <a href="{% url 'add_address' %}" class="col-3 btn ml-auto mr-5 text-white"  style="background-color: black;">Add</a>
+                                    <a href="{% url 'add_address' %}" class="col-12 btn ml-auto mr-5 text-white"  style="background-color: black;">Add</a>
                                 </div>
                             </div>
 
@@ -332,7 +332,7 @@
                                 <div class="col-12 d-block ml-2">
                                     <p class="card-text mb-0 h2 text-center"><b>No addresses found in your account!</b></p>
                                 </div>
-                                <a href="{% url 'add_address' %}" class="col-3 btn text-white mx-auto mt-3"  style="background-color: #007bff;">Add Address</a>
+                                <a href="{% url 'add_address' %}" class="col-12 btn text-white mx-auto mt-3"  style="background-color: #007bff;">Add Address</a>
                             </div>
 
                         </div>
@@ -419,6 +419,15 @@
     </footer>
     <!--End Footer-->
 
-
+<script src="{% static 'js/vendor/jquery-3.3.1.min.js' %}"></script>
+<script src="{% static 'js/vendor/jquery.cookie.js' %}"></script>
+<script src="{% static 'js/vendor/modernizr-3.6.0.min.js' %}"></script>
+<script src="{% static 'js/vendor/wow.min.js' %}"></script>
+<!-- Including Javascript -->
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/plugins.js' %}"></script>
+<script src="{% static 'js/popper.min.js' %}"></script>
+<script src="{% static 'js/lazysizes.js' %}"></script>
+<script src="{% static 'js/main.js' %}"></script>
                    </body>
                 </html>
