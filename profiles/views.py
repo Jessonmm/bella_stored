@@ -3,7 +3,7 @@ from django.contrib import messages
 from orders.models import Address
 from django.db.models import Q
 from .models import UserProfile
-from category.models import SubCategories
+from category.models import *
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
@@ -19,7 +19,7 @@ from .forms import UserProfileForm
 @login_required(login_url = 'login')
 @never_cache
 def profiles(request):
-
+    categories = Categories.objects.all()
     if not request.user.is_authenticated:
         return redirect('login')
     userprofile, created = UserProfile.objects.get_or_create(user=request.user)
@@ -33,13 +33,11 @@ def profiles(request):
     else:
         form = UserProfileForm(instance=userprofile)
 
-    return render(request, 'profile/profile.html', {'form': form})
+    return render(request, 'profile/profile.html', {'form': form, 'categories':categories,})
 
 
 
-@login_required
-def user_profile(request):
-    pass
+
 
 
 @login_required(login_url = 'login')
@@ -112,6 +110,7 @@ def edit_profile(request):
 @login_required(login_url = 'login')
 @never_cache
 def change_password(request):
+    categories = Categories.objects.all()
     if not request.user.is_authenticated:
         return redirect('login')
     if request.method == 'POST':
@@ -159,7 +158,7 @@ def change_password(request):
             messages.error(request, 'Current password is incorrect')
             return redirect('change-password')
 
-    return render(request, 'profile/change password.html')
+    return render(request, 'profile/change password.html',{'categories':categories,})
 
 
 
@@ -168,6 +167,7 @@ def change_password(request):
 @login_required(login_url = 'login')
 @never_cache
 def myaddress(request):
+    categories = Categories.objects.all()
     if not request.user.is_authenticated:
         return redirect('login')
     current_user = request.user
@@ -176,7 +176,7 @@ def myaddress(request):
     except ObjectDoesNotExist:
         addresses = []
 
-    context = {'address': addresses}
+    context = {'address': addresses, 'categories':categories,}
     return render(request, 'profile/myaddress.html', context)
 
 
@@ -407,8 +407,9 @@ def addaddress(request):
 
 
 def editaddress(request, id):
+    categories = Categories.objects.all()
     address = get_object_or_404(Address, id=id)
-    context = {'address': address}
+    context = {'address': address, 'categories':categories, }
     return render(request, 'profile/edit_address.html', context)
 
 

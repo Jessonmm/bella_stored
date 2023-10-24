@@ -6,6 +6,7 @@ from django.http import HttpResponseRedirect
 from shop.models import Products, Variation
 from django.http import JsonResponse
 from django.contrib import messages
+from category.models import *
 from .models import Cart, CartItem
 from orders.models import Address
 from django.db.models import Q
@@ -22,6 +23,7 @@ def _cart_id(request):
 @login_required(login_url = 'login')
 @never_cache
 def cart(request, total=0, quantity=0, cart_items=None):
+    categories = Categories.objects.all()
     if not request.user.is_authenticated:
         return redirect('login')
     tax = 0
@@ -74,6 +76,7 @@ def cart(request, total=0, quantity=0, cart_items=None):
         return redirect('store')
 
     context = {
+        'categories':categories,
         'total': total,
         'quantity': quantity,
         'cart_items': cart_items,
@@ -276,6 +279,7 @@ def remove_cart_item(request, product_id, cart_item_id):
 @login_required(login_url = 'login')
 @never_cache
 def checkout(request):
+    categories = Categories.objects.all()
     if not request.user.is_authenticated:
         return redirect('login')
     try:
@@ -333,6 +337,7 @@ def checkout(request):
     coupons = UserCoupon.objects.filter(user=request.user, used=False)
 
     context = {
+        'categories':categories,
         'address': address,
         'total': total,
         'quantity': quantity,

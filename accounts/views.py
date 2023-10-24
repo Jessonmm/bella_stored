@@ -8,6 +8,7 @@ from django.db.models import Q
 
 from django.core.mail import send_mail
 from django.contrib import messages
+from category.models import  *
 from accounts.models import Account
 from django.conf import settings
 import smtplib
@@ -20,7 +21,8 @@ import re
 
 
 def home(request):
-    return render(request, 'accounts/home.html')
+    categories=Categories.objects.all()
+    return render(request, 'accounts/home.html',{'categories':categories})
 
 
 

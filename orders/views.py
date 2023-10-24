@@ -14,6 +14,7 @@ from django.conf import settings
 import datetime
 from django.http import JsonResponse
 import razorpay
+from category.models import *
 import json
 from django.db.models import Sum
 
@@ -28,6 +29,7 @@ client =razorpay.Client(auth=(settings.RAZORPAY_ID,settings.RAZORPAY_KEY))
 
 
 def wallet(request):
+    categories = Categories.objects.all()
     try:
         wallet, created = Wallet.objects.get_or_create(user=request.user)
         if created:
@@ -35,7 +37,7 @@ def wallet(request):
     except Wallet.DoesNotExist:
         wallet = None
     user=request.user
-    context={'wallet':wallet, 'user':user}
+    context={'wallet':wallet, 'user':user, 'categories':categories, }
     return render(request,'orders/wallet.html',context)
 
 
@@ -46,6 +48,7 @@ def  add_fund(request):
 @login_required(login_url = 'accounts/login')
 @never_cache
 def place_order(request, total=0, quantity=0):
+    categories = Categories.objects.all()
     if not request.user.is_authenticated:
         return redirect('login')
     current_user = request.user
@@ -171,6 +174,7 @@ def place_order(request, total=0, quantity=0):
         context = {
             'order': order,
             'cart_items': cart_items,
+            'categories':categories,
             'total': total,
             'wallet':wallet,
             'tax': tax,
@@ -186,6 +190,7 @@ def place_order(request, total=0, quantity=0):
         return redirect('checkout')
 
 def wallet_payment(request, order_number):
+    categories = Categories.objects.all()
     try:
         if not request.user.is_authenticated:
             return redirect('login')
@@ -194,6 +199,7 @@ def wallet_payment(request, order_number):
 
         cart_items = CartItem.objects.filter(user=request.user)
         order.is_ordered = True
+        wallet,created=Wallet.objects.get_or_create(user=request.user)
 
         payment = Payment(
             user=request.user,
@@ -251,6 +257,7 @@ def wallet_payment(request, order_number):
         discount = int(order.order_discount)
 
         context = {
+            'categories' : categories,
             'order': order,
             'sub_total': sub_total,
             'shipping': shipping,
@@ -273,6 +280,7 @@ def wallet_payment(request, order_number):
 @login_required(login_url = 'accounts/login')
 @never_cache
 def cash_on_delivery(request, order_number):
+    categories = Categories.objects.all()
     try:
         if not request.user.is_authenticated:
             return redirect('login')
@@ -338,6 +346,7 @@ def cash_on_delivery(request, order_number):
         context={
 
             'order':order,
+            'categories':categories,
             'sub_total':sub_total,
             'shipping':shipping,
             'grand_total':grand_total,
@@ -415,6 +424,7 @@ def payments(request):
 @login_required(login_url = 'accounts/login')
 @never_cache
 def payments_completed(request):
+        categories = Categories.objects.all()
         if not request.user.is_authenticated:
             return redirect('login')
         order_number = request.GET.get('order_number')
@@ -436,6 +446,7 @@ def payments_completed(request):
                 'transID': payment.payment_id,
                 'payment': payment,
                 'subtotal': subtotal,
+                'categories':categories,
             }
             return render(request, 'orders/payment-success.html', context)
         except (Payment.DoesNotExist, Order.DoesNotExist):
@@ -471,11 +482,12 @@ def razorpay(request):
 @login_required(login_url = 'accounts/login')
 @never_cache
 def my_orders(request):
+    categories = Categories.objects.all()
     try:
         if not request.user.is_authenticated:
             return redirect('login')
         orders = Order.objects.filter(user=request.user, is_ordered=True).order_by('-created_at')
-        context={'orders':orders}
+        context={'orders':orders, 'categories':categories,}
         return render(request,'orders/myorders.html',context)
     except ObjectDoesNotExist:
         messages.error(request, 'An error occurred while fetching your orders.')
@@ -486,6 +498,7 @@ def my_orders(request):
 @login_required(login_url = 'accounts/login')
 @never_cache
 def order_details(request,order_id):
+    categories = Categories.objects.all()
     try:
         if not request.user.is_authenticated:
             return redirect('login')
@@ -512,6 +525,7 @@ def order_details(request,order_id):
             'order': order,
             'subtotal': total,
             'tax':tax,
+            'categories':categories,
             'shipping':shipping,
             'grand_total':grand_total
         }

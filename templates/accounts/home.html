@@ -125,8 +125,7 @@
 
 
           {% if  request.user.is_authenticated %}
-                             <li class="lvl1 parent dropdown"><a href="#">Profile <i class="anm anm-angle-down-l"></i></a>
-                          <ul class="dropdown">
+
                           <li><a href="{% url 'profiles' %}" class="site-nav">My Account</a></li>
                           <li><a href="{% url 'change-password' %}" class="site-nav">Change password</a></li>
                             <li><a href="{% url 'my_address' %}" class="site-nav">My Address</a></li>
@@ -134,8 +133,7 @@
                             <li><a href="{% url 'cart' %}" class="site-nav">Cart Page</a> </li>
                             <li><a href="{% url 'wallet' %}" class="site-nav">Wallet</a> </li>
 
-                          </ul>
-                                </li>
+
             {% endif  %}
       </ul>
 	</div>
@@ -201,7 +199,7 @@
                     	<div class="wrap-text  left text-large font-bold">
                           <h2 class="h2 mega-title"> The mid season SALE </h2>
                           <div class="rte-setting mega-subtitle">buy chappals</div>
-                          <a href="#" class="btn">Shop Now</a>
+                          <a href="{% url 'store' %}" class="btn">Shop now</a>
                       </div>
                     </div>
                 </div>
@@ -224,42 +222,40 @@
                 </div>
             </div>
         </div>
+
+
     <!--Footer-->
-    <footer id="footer">
+       <!--Footer-->
+          <footer>
         <div class="site-footer">
         	<div class="container">
      			<!--Footer Links-->
             	<div class="footer-top">
                 	<div class="row">
-
                     	<div class="col-12 col-sm-12 col-md-3 col-lg-3 footer-links">
                         	<h4 class="h4">Quick Shop</h4>
                             <ul>
-                            	<li><a href="#">Women</a></li>
-                                <li><a href="#">Men</a></li>
-                                <li><a href="#">Kids</a></li>
-                                <li><a href="#">Sportswear</a></li>
-                                <li><a href="#">Sale</a></li>
+                                {% for c in categories %}
+                                <li><a href="{% url 'store' %}">{{c.name}}</a></li>
+                                {% endfor %}
+
+
+
                             </ul>
                         </div>
                         <div class="col-12 col-sm-12 col-md-3 col-lg-3 footer-links">
                         	<h4 class="h4">Informations</h4>
                             <ul>
-                            	<li><a href="#">About us</a></li>
-                                <li><a href="#">Careers</a></li>
-                                <li><a href="#">Privacy policy</a></li>
-                                <li><a href="#">Terms &amp; condition</a></li>
-                                <li><a href="#">My Account</a></li>
+
+                                <li><a href="{% url 'profiles' %}">My Account</a></li>
                             </ul>
                         </div>
                         <div class="col-12 col-sm-12 col-md-3 col-lg-3 footer-links">
                         	<h4 class="h4">Customer Services</h4>
                             <ul>
-                            	<li><a href="#">Request Personal Data</a></li>
-                                <li><a href="#">FAQ's</a></li>
-                                <li><a href="#">Contact Us</a></li>
-                                <li><a href="#">Orders and Returns</a></li>
-                                <li><a href="#">Support Center</a></li>
+
+                                <li><a href="{% url 'my-orders' %}">Orders and Returns</a></li>
+                                <li><a href="{% url 'my_address' %}">my address</a></li>
                             </ul>
                         </div>
                         <div class="col-12 col-sm-12 col-md-3 col-lg-3 footer-links">
@@ -268,31 +264,20 @@
                             	<li><a href="#">Jesson mm</a></li>
                                 <li><a href="#">6238927277</a></li>
                                 <li><a href="#">www.jessommm0@gmail.com</a></li>
+                                <li><a href="templateshub.net"><a class="social-icons__link" href="https://www.instagram.com/___jesson_mm___/" target="_blank" title="Belle Multipurpose Bootstrap 4 Template on Instagram"><i class="icon icon-instagram"></i> <span class="icon__fallback-text">Instagram</span></a></a></li>
 
                             </ul>
 
                         </div>
-
                     </div>
                 </div>
                 <!--End Footer Links-->
-                <hr>
-                <div class="footer-bottom">
-                	<div class="row">
-	                	<span class="col-12 col-sm-12 col-md-12 col-lg-12 copyright text-center"><span></span> <a href="templateshub.net"><a class="social-icons__link" href="https://www.instagram.com/___jesson_mm___/" target="_blank" title="Belle Multipurpose Bootstrap 4 Template on Instagram"><i class="icon icon-instagram"></i> <span class="icon__fallback-text">Instagram</span></a></a></span>
-                        <!--End Footer Copyright-->
-                    </div>
-                </div>
+
             </div>
         </div>
     </footer>
-
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-	<!-- End Newsletter Popup -->
+    <!--End Foo
+	 End Newsletter Popup -->
 
      <!-- Including Jquery -->
      <script src={% static '/js/vendor/jquery-3.3.1.min.js' %}></script>

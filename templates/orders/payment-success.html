@@ -218,16 +218,14 @@
 
 
                                   {% if  request.user.is_authenticated %}
-                             <li class="lvl1 parent dropdown"><a href="#">Profile <i class="anm anm-angle-down-l"></i></a>
-                          <ul class="dropdown">
+
                          <li><a href="{% url 'profiles' %}" class="site-nav">My Account</a></li>
                           <li><a href="{% url 'change-password' %}" class="site-nav">Change password</a></li>
                             <li><a href="{% url 'my_address' %}" class="site-nav">My Address</a></li>
                             <li><a href="{% url 'my-orders' %}" class="site-nav">Orders</a></li>
                             <li><a href="{% url 'cart' %}" class="site-nav">Cart Page</a> </li>
                             <li><a href="{% url 'wallet' %}" class="site-nav">Wallet</a> </li>
-                          </ul>
-                                </li>
+
                           {% endif %}
 
 
@@ -261,9 +259,10 @@
 
                         </h4>
                         <div class="row py-3 d-flex justify-content-center">
-                            <div class="col-4">
+                            <div class="col-12">
                                 <a href="{% url 'home' %}" class="btn text-white" style="background-color: #7fad39;">Home</a>
-                                <input type="button" class="btn btn-danger ml-5" id="btnExport" value="Download Invoice" />
+                                <button onclick="printDiv('invoice')" class="btn btn-danger ml-5" >Download Invoice</button>
+
                             </div>
                         </div>
 
@@ -380,13 +379,13 @@
 
     <!--End Body Content-->
 
-    <!--Footer-->
-   <footer id="footer">
+
+ <footer>
         <div class="newsletter-section">
 
 
             </div>
-        </div>
+
         <div class="site-footer">
         	<div class="container">
      			<!--Footer Links-->
@@ -395,31 +394,27 @@
                     	<div class="col-12 col-sm-12 col-md-3 col-lg-3 footer-links">
                         	<h4 class="h4">Quick Shop</h4>
                             <ul>
-                            	<li><a href="#">Women</a></li>
-                                <li><a href="#">Men</a></li>
-                                <li><a href="#">Kids</a></li>
-                                <li><a href="#">Sportswear</a></li>
-                                <li><a href="#">Sale</a></li>
+                                {% for c in categories %}
+                                <li><a href="{% url 'store' %}">{{c.name}}</a></li>
+                                {% endfor %}
+
+
+
                             </ul>
                         </div>
                         <div class="col-12 col-sm-12 col-md-3 col-lg-3 footer-links">
                         	<h4 class="h4">Informations</h4>
                             <ul>
-                            	<li><a href="#">About us</a></li>
-                                <li><a href="#">Careers</a></li>
-                                <li><a href="#">Privacy policy</a></li>
-                                <li><a href="#">Terms &amp; condition</a></li>
-                                <li><a href="#">My Account</a></li>
+
+                                <li><a href="{% url 'profiles' %}">My Account</a></li>
                             </ul>
                         </div>
                         <div class="col-12 col-sm-12 col-md-3 col-lg-3 footer-links">
                         	<h4 class="h4">Customer Services</h4>
                             <ul>
-                            	<li><a href="#">Request Personal Data</a></li>
-                                <li><a href="#">FAQ's</a></li>
-                                <li><a href="#">Contact Us</a></li>
-                                <li><a href="#">Orders and Returns</a></li>
-                                <li><a href="#">Support Center</a></li>
+
+                                <li><a href="{% url 'my-orders' %}">Orders and Returns</a></li>
+                                <li><a href="{% url 'my_address' %}">my address</a></li>
                             </ul>
                         </div>
                         <div class="col-12 col-sm-12 col-md-3 col-lg-3 footer-links">
@@ -428,6 +423,7 @@
                             	<li><a href="#">Jesson mm</a></li>
                                 <li><a href="#">6238927277</a></li>
                                 <li><a href="#">www.jessommm0@gmail.com</a></li>
+                                <li><a href="templateshub.net"><a class="social-icons__link" href="https://www.instagram.com/___jesson_mm___/" target="_blank" title="Belle Multipurpose Bootstrap 4 Template on Instagram"><i class="icon icon-instagram"></i> <span class="icon__fallback-text">Instagram</span></a></a></li>
 
                             </ul>
 
@@ -435,26 +431,16 @@
                     </div>
                 </div>
                 <!--End Footer Links-->
-                <hr>
-                <div class="footer-bottom">
-                	<div class="row">
-                    	<!--Footer Copyright-->
-	                	<div class="row">
-	                	<span class="col-12 col-sm-12 col-md-12 col-lg-12 copyright text-center"><span></span> <a href="templateshub.net"><a class="social-icons__link" href="https://www.instagram.com/___jesson_mm___/" target="_blank" title="Belle Multipurpose Bootstrap 4 Template on Instagram"><i class="icon icon-instagram"></i> <span class="icon__fallback-text">Instagram</span></a></a></span>
-                        <!--End Footer Copyright-->
-                    </div>
-                        <!--End Footer Payment Icon-->
-                    </div>
-                </div>
+
             </div>
         </div>
     </footer>
+
     <!--End Footer-->
     <!--Scoll Top-->
     <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
     <!--End Scoll Top-->
 
-     <!-- Including Jquery -->
 <script src="{% static 'js/vendor/jquery-3.3.1.min.js' %}"></script>
 <script src="{% static 'js/vendor/jquery.cookie.js' %}"></script>
 <script src="{% static 'js/vendor/modernizr-3.6.0.min.js' %}"></script>
@@ -477,19 +463,16 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
     <!-- script for for pdf creation -->
 
-    <script type="text/javascript">
-        $("body").on("click", "#btnExport", function () {
-            html2canvas($('#invoice')[0], {
-                onrendered: function (canvas) {
-                    var data = canvas.toDataURL();
-                    var docDefinition = {
-                        content: [{
-                            image: data,
-                            width: 500
-                        }]
-                    };
-                    pdfMake.createPdf(docDefinition).download("invoice.pdf");
-                }
-            });
-        });
-    </script>
+						<script>
+    function printDiv(divName) {
+        var printContents = document.getElementById(divName).innerHTML;
+        var originalContents = document.body.innerHTML;
+
+        document.body.innerHTML = printContents;
+
+        window.print();
+
+        document.body.innerHTML = originalContents;
+
+    }
+</script>
