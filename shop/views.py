@@ -76,8 +76,7 @@ def store(request,category_slug=None,subcategory_slug=None):
 
 
 
-@login_required(login_url = 'login')
-@never_cache
+
 def search(request):
     categories = Categories.objects.all()
     try:
@@ -103,8 +102,7 @@ def search(request):
         }
         return render(request, 'includes/404.html', context)
 
-@login_required(login_url = 'login')
-@never_cache
+
 def product_details(request, category_slug, subcategory_slug, product_slug):
     try:
         categories = Categories.objects.all()
